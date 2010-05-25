@@ -3,6 +3,9 @@
 
 #include <SFML\Window.hpp>
 
+///
+/// Input events interface
+///
 class EventListener
 {
 private:

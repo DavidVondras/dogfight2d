@@ -1,5 +1,7 @@
 #include <iostream>
+#include <math.h>
 #include "AeroplaneEntity.h"
+#include "AppConfiguration.h"
 
 
 AeroplaneEntity::AeroplaneEntity(void)
@@ -34,6 +36,10 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 		SetRotation(GetRotation()+2);
 	if(eventListener->GetInputRight())
 		SetRotation(GetRotation()-2);
+
+	_vX = (float)cos(GetRotation()*PI/180)*2;
+	_vY = -(float)sin(GetRotation()*PI/180)*2;
+
 	this->Move(_vX, _vY);
 }
 

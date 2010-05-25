@@ -2,9 +2,14 @@
 #define SCENEMANAGER_H
 
 #include<SFML\Graphics.hpp>
+
 #include"EventListener.h"
 #include"EnvironementProvider.h"
 
+
+///
+/// Scene manager class. Manages all scene elements
+///
 class SceneManager
 {
 private:
