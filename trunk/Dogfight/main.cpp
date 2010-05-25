@@ -9,7 +9,7 @@ int main(void)
 
 	do
 	{
-		sf::Sleep(0.01f);
+		sf::Sleep(0.005f);
 		sceneManager.Step();
 	}
 	while(!sceneManager.GetEventListener()->GetInputClose());
