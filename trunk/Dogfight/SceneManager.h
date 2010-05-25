@@ -14,10 +14,9 @@ class SceneManager
 {
 private:
 	sf::Image* _sceneImage;
-
 	sf::Sprite* _sceneImageSprite;
-
 	sf::RenderWindow* _renderWindow;
+
 	EventListener* _eventListener;
 	EnvironementProvider* _environementProvider;
 
