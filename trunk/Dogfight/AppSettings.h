@@ -1,5 +1,7 @@
-#ifndef APPCONFIGURATION_H
-#define APPCONFIGURATION_H
+#ifndef APPSETTINGS_H
+#define APPSETTINGS_H
+
+#define DeleteReference(referenceObject) if(referenceObject != NULL) delete referenceObject; 
 
 ///
 /// Contains Application settings information

@@ -70,7 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AeroplaneEntity.h" />
-    <ClInclude Include="AppConfiguration.h" />
+    <ClInclude Include="AppSettings.h" />
     <ClInclude Include="EnvironementProvider.h" />
     <ClInclude Include="EventListener.h" />
     <ClInclude Include="FrameRateManager.h" />

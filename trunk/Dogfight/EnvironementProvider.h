@@ -12,6 +12,7 @@ class EnvironementProvider
 private:
 	sf::Image* _sceneCollisionMask;
 	ObjectEntity* _aeroplaneArray[64];
+	int _aeroplaneArrayCount;
 
 public:
 	//Initialization

@@ -20,7 +20,10 @@ int main(void)
 
 	//Main loop
 	frameRateManager.Reset();
-	do { sceneManager.Step(); }
+	do
+	{
+		sceneManager.Step();
+	}
 	while(!sceneManager.GetEventListener()->GetInputClose());
 
 	return EXIT_SUCCESS;
@@ -33,5 +36,5 @@ int main(void)
 void EndStepMethod(void)
 {
 	if(!frameRateManager.WaitBalance())
-		printf("Warning: Framerate is too low [%f secondes]\n", frameRateManager.GetLastSleepDuration());
+		printf("Warning: Framerate is too fast [%f secondes]\n", frameRateManager.GetLastSleepDuration());
 }
