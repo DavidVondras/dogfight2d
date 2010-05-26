@@ -1,9 +1,11 @@
 #include "EnvironementProvider.h"
+#include "AppSettings.h"
 
 
 EnvironementProvider::EnvironementProvider(void)
+	:_aeroplaneArrayCount(0),
+	_sceneCollisionMask(NULL)
 {
-	_sceneCollisionMask = NULL;
 	for(int i=0; i<64;i++)
 		_aeroplaneArray[i] = NULL;
 }
@@ -11,8 +13,7 @@ EnvironementProvider::EnvironementProvider(void)
 
 EnvironementProvider::~EnvironementProvider(void)
 {
-	if(_sceneCollisionMask != NULL)
-		delete _sceneCollisionMask;
+	DeleteReference(_sceneCollisionMask);
 
 	for(int i=0;i<64;i++)
 		if(_aeroplaneArray[i] != NULL)

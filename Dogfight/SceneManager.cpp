@@ -1,19 +1,18 @@
 #include "SceneManager.h"
 #include "AeroplaneEntity.h"
+#include "AppSettings.h"
 #include <iostream>
 
-
-SceneManager::SceneManager(void)
+SceneManager::SceneManager(void):
+	_sceneImage(NULL),
+	_sceneImageSprite(NULL),
+	_eventListener(NULL),
+	_environementProvider(NULL),
+	_renderWindow(NULL),
+	_stepBeginMethod(NULL),
+	_stepEndMethod(NULL),
+	_sceneView(NULL)
 {
-	//Initialize fields
-	_sceneImage = NULL;
-	_sceneImageSprite = NULL;
-	_eventListener = NULL;
-	_environementProvider = NULL;
-	_renderWindow = NULL;
-	_stepBeginMethod = NULL;
-	_stepEndMethod = NULL;
-
 	//Create instances
 	_sceneImage = new sf::Image();
 	if(!_sceneImage->LoadFromFile("maptest.png"))
@@ -22,6 +21,7 @@ SceneManager::SceneManager(void)
 	}
 
 	_renderWindow = new sf::RenderWindow(sf::VideoMode(800,600, 32), "== Dogfight ==");
+	_sceneView = new sf::View(sf::FloatRect(0,0,800,600));
 	_eventListener = new EventListener(_renderWindow);
 	_environementProvider = new EnvironementProvider();
 
@@ -32,19 +32,15 @@ SceneManager::SceneManager(void)
 
 SceneManager::~SceneManager(void)
 {
-	if(_sceneImage != NULL)
-		delete _sceneImage;
-	if(_sceneImageSprite != NULL)
-		delete _sceneImageSprite;
-	if(_eventListener != NULL)
-		delete _eventListener;
-	if(_environementProvider != NULL)
-		delete _environementProvider;
-	if(_renderWindow != NULL)
-	{
+	if(_renderWindow != NULL && _renderWindow->IsOpened())
 		_renderWindow->Close();
-		delete _renderWindow;
-	}
+
+	DeleteReference(_sceneImage);
+	DeleteReference(_sceneImageSprite);
+	DeleteReference(_eventListener);
+	DeleteReference(_environementProvider);
+	DeleteReference(_renderWindow);
+	DeleteReference(_sceneView);
 }
 
 
@@ -64,6 +60,10 @@ void SceneManager::Step(void)
 	GetEnvironementProvider()->GetAeroplaneArray()[0]->Think(_eventListener, _environementProvider);
 
 	//Draw methods
+	_renderWindow->SetView(*_sceneView);
+	_sceneView->SetCenter(sf::Vector2f(
+		GetEnvironementProvider()->GetAeroplaneArray()[0]->GetPosition().x,
+		std::min<float>(GetEnvironementProvider()->GetAeroplaneArray()[0]->GetPosition().y,_renderWindow->GetHeight()/2.f)));
 	_renderWindow->Clear(sf::Color(0,100,255));
 	_renderWindow->Draw(*_sceneImageSprite);
 	GetEnvironementProvider()->GetAeroplaneArray()[0]->Draw(_renderWindow);

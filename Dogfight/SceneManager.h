@@ -16,6 +16,7 @@ private:
 	sf::Image* _sceneImage;
 	sf::Sprite* _sceneImageSprite;
 	sf::RenderWindow* _renderWindow;
+	sf::View* _sceneView;
 
 	EventListener* _eventListener;
 	EnvironementProvider* _environementProvider;

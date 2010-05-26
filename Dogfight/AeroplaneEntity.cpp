@@ -1,18 +1,17 @@
 #include <iostream>
 #include <math.h>
 #include "AeroplaneEntity.h"
-#include "AppConfiguration.h"
+#include "AppSettings.h"
 
 
-AeroplaneEntity::AeroplaneEntity(void)
+AeroplaneEntity::AeroplaneEntity(void):
+	_imageAeroplane(NULL),
+	_vX(0),
+	_vY(0)
 {
-	_imageAeroplane = NULL;
-	_vX = _vY = 0;
-
 	//Dummy data
-	//_vX = 2;
 	SetPosition(100,100);
-	SetCenter(40,40);
+	SetCenter(38,40);
 
 	_imageAeroplane = new sf::Image();
 	if(!_imageAeroplane->LoadFromFile("rafaletest.png"))
@@ -25,20 +24,19 @@ AeroplaneEntity::AeroplaneEntity(void)
 
 AeroplaneEntity::~AeroplaneEntity(void)
 {
-	if(_imageAeroplane != NULL)
-		delete _imageAeroplane;
+	DeleteReference(_imageAeroplane);
 }
 
 
 void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* environementprovider)
 {
 	if(eventListener->GetInputLeft())
-		SetRotation(GetRotation()+2);
+		SetRotation(GetRotation()+3);
 	if(eventListener->GetInputRight())
-		SetRotation(GetRotation()-2);
+		SetRotation(GetRotation()-3);
 
-	_vX = (float)cos(GetRotation()*PI/180)*2;
-	_vY = -(float)sin(GetRotation()*PI/180)*2;
+	_vX = (float)cos(GetRotation()*PI/180)*10;
+	_vY = -(float)sin(GetRotation()*PI/180)*10;
 
 	this->Move(_vX, _vY);
 }
