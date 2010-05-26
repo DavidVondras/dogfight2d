@@ -20,6 +20,9 @@ private:
 	EventListener* _eventListener;
 	EnvironementProvider* _environementProvider;
 
+	void (*_stepBeginMethod)(void);
+	void (*_stepEndMethod)(void);
+
 public:
 	//Initialization
 	SceneManager(void);
@@ -29,6 +32,8 @@ public:
 	EventListener* GetEventListener(void) { return _eventListener; }
 	EnvironementProvider* GetEnvironementProvider(void) { return _environementProvider; }
 	sf::RenderWindow* GetRenderWindow(void) { return _renderWindow; }
+	void SetStepBeginMethod(void (*value)(void)) { _stepBeginMethod = value; }
+	void SetStepEndMethod(void (*value)(void)) { _stepEndMethod = value; }
 
 	//Methods
 	void Step(void);

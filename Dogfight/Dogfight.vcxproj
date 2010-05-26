@@ -64,6 +64,7 @@
     <ClCompile Include="AeroplaneEntity.cpp" />
     <ClCompile Include="EnvironementProvider.cpp" />
     <ClCompile Include="EventListener.cpp" />
+    <ClCompile Include="FrameRateManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SceneManager.cpp" />
   </ItemGroup>
@@ -72,6 +73,7 @@
     <ClInclude Include="AppConfiguration.h" />
     <ClInclude Include="EnvironementProvider.h" />
     <ClInclude Include="EventListener.h" />
+    <ClInclude Include="FrameRateManager.h" />
     <ClInclude Include="ObjectEntity.h" />
     <ClInclude Include="SceneManager.h" />
   </ItemGroup>

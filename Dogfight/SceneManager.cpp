@@ -11,6 +11,8 @@ SceneManager::SceneManager(void)
 	_eventListener = NULL;
 	_environementProvider = NULL;
 	_renderWindow = NULL;
+	_stepBeginMethod = NULL;
+	_stepEndMethod = NULL;
 
 	//Create instances
 	_sceneImage = new sf::Image();
@@ -51,10 +53,25 @@ SceneManager::~SceneManager(void)
 ///
 void SceneManager::Step(void)
 {
+	//Invoke begin method
+	if(_stepBeginMethod != NULL)
+		_stepBeginMethod();
+
+	//Check events
 	_eventListener->CheckEvents();
+
+	//Think methods
 	GetEnvironementProvider()->GetAeroplaneArray()[0]->Think(_eventListener, _environementProvider);
+
+	//Draw methods
 	_renderWindow->Clear(sf::Color(0,100,255));
 	_renderWindow->Draw(*_sceneImageSprite);
 	GetEnvironementProvider()->GetAeroplaneArray()[0]->Draw(_renderWindow);
+
+	//Display renderWindow
 	_renderWindow->Display();
+
+	//Invoke end method
+	if(_stepEndMethod != NULL)
+		_stepEndMethod();
 }
