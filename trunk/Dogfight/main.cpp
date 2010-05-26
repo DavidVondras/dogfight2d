@@ -2,27 +2,36 @@
 #include <iostream>
 
 #include "SceneManager.h"
+#include "FrameRateManager.h"
 
+
+// Declarations
+FrameRateManager frameRateManager(30.f);
+void EndStepMethod(void);
+
+
+///
+/// Main method
+///
 int main(void)
 {
 	SceneManager sceneManager;
-	sf::Clock clock;
-	float elapsedTime;
-	float frameDuration = 1.f/30.f;
+	sceneManager.SetStepEndMethod(EndStepMethod);
 
-	do
-	{
-		clock.Reset();
-		sceneManager.Step();
-		elapsedTime = clock.GetElapsedTime();
-		if(elapsedTime < frameDuration)
-			//Do step
-			sf::Sleep(frameDuration - elapsedTime);
-		else
-			//Notice that framerate is not supported
-			std::cout<<"Warning: Framerate is too low ["<<1/25 - elapsedTime<<" secondes]"<<std::endl;
-	}
+	//Main loop
+	frameRateManager.Reset();
+	do { sceneManager.Step(); }
 	while(!sceneManager.GetEventListener()->GetInputClose());
 
 	return EXIT_SUCCESS;
+}
+
+
+///
+/// Method invoked at the endInvoke of the step method
+///
+void EndStepMethod(void)
+{
+	if(!frameRateManager.WaitBalance())
+		printf("Warning: Framerate is too low [%f secondes]\n", frameRateManager.GetLastSleepDuration());
 }
