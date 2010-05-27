@@ -6,7 +6,7 @@
 
 
 // Declarations
-FrameRateManager frameRateManager(30.f);
+FrameRateManager frameRateManager(40.f);
 void EndStepMethod(void);
 
 

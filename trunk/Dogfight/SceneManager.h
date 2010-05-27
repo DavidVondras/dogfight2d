@@ -13,7 +13,6 @@
 class SceneManager
 {
 private:
-	sf::Image* _sceneImage;
 	sf::Sprite* _sceneImageSprite;
 	sf::RenderWindow* _renderWindow;
 	sf::View* _sceneView;
@@ -38,6 +37,9 @@ public:
 
 	//Methods
 	void Step(void);
+	void Think(ObjectEntity* objectEntity);
+	void Draw(ObjectEntity* objectEntity);
+	void Draw(sf::Sprite* sprite);
 };
 
 #endif
