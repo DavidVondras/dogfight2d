@@ -57,7 +57,7 @@ void SceneManager::Step(void)
 		std::min<float>(GetEnvironementProvider()->GetAeroplaneArray()[0]->GetPosition().y,_renderWindow->GetHeight()/2.f)));
 
 	//Draw methods
-	_renderWindow->Clear(sf::Color(0,100,255));
+	_renderWindow->Clear(sf::Color(150,186,219));
 	Draw(_sceneImageSprite);
 	Draw(GetEnvironementProvider()->GetAeroplaneArray()[0]);
 
@@ -73,7 +73,7 @@ void SceneManager::Step(void)
 void SceneManager::Think(ObjectEntity* objectEntity)
 {
 	sf::Vector2f objectEntityPosition = objectEntity->GetPosition();
-	float sceneWidth = _environementProvider->GetSceneWidth();
+	float sceneWidth = (float)_environementProvider->GetSceneWidth();
 
 	//Think
 	objectEntity->Think(_eventListener, _environementProvider);

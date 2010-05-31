@@ -12,6 +12,8 @@
 
 #define SCENE_MAX_OBJECTENTITY_NB 64
 
-#define PI 3.14159265
+#define ENTITY_MAX_COLLISIONPOINT_NB 8
+
+#define PI 3.14159265f
 
 #endif

@@ -13,13 +13,16 @@ private:
 		_inputLeft,
 		_inputRight,
 		_inputUp,
-		_inputDown;
+		_inputDown,
+		_inputPropNum,
+		_inputPropNumValue;
 	sf::RenderWindow* _renderWindow;
 
 public:
 	//Initialization
 	EventListener(sf::RenderWindow* renderWindow)
 		:_renderWindow(renderWindow),
+		_inputPropNumValue(0),
 		_inputClose(false){}
 
 	~EventListener(void){}
@@ -30,6 +33,8 @@ public:
 	int GetInputRight(void) { return _inputRight; }
 	int GetInputUp(void) { return _inputUp; }
 	int GetInputDown(void) { return _inputDown; }
+	int GetInputPropNum(void) { return _inputPropNum; }
+	int GetInputPropNumValue(void) { return _inputPropNumValue; }
 
 	//Methods
 	void CheckEvents(void);
