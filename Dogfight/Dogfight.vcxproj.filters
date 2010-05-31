@@ -13,11 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Base Classes Files">
-      <UniqueIdentifier>{eddf817f-b787-4d8a-a92f-f8873a4914ac}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Image Files">
       <UniqueIdentifier>{1f0f956b-d2b8-4205-8052-76d5a7c3949b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base Classes Files">
+      <UniqueIdentifier>{eddf817f-b787-4d8a-a92f-f8873a4914ac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +58,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AppSettings.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionPoint.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>

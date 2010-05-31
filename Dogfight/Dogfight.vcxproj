@@ -71,6 +71,7 @@
   <ItemGroup>
     <ClInclude Include="AeroplaneEntity.h" />
     <ClInclude Include="AppSettings.h" />
+    <ClInclude Include="CollisionPoint.h" />
     <ClInclude Include="EnvironementProvider.h" />
     <ClInclude Include="EventListener.h" />
     <ClInclude Include="FrameRateManager.h" />
