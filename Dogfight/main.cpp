@@ -35,6 +35,8 @@ int main(void)
 ///
 void EndStepMethod(void)
 {
-	if(!frameRateManager.WaitBalance())
-		printf("Warning: Framerate is too fast [%f secondes]\n", frameRateManager.GetLastSleepDuration());
+	// Obsolete: managed by verticalSync
+	// TODO: display framerate
+	//if(!frameRateManager.WaitBalance())
+	//	printf("Warning: Framerate is too fast [%f secondes]\n", frameRateManager.GetLastSleepDuration());
 }

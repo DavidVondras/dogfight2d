@@ -19,6 +19,9 @@ SceneManager::SceneManager(void):
 
 	_sceneImageSprite = new sf::Sprite(*_environementProvider->GetSceneImage(), sf::Vector2f(0.f,0.f));
 	GetEnvironementProvider()->GetAeroplaneArray()[0] = new AeroplaneEntity();
+
+	_renderWindow->UseVerticalSync(true);
+	_renderWindow->SetFramerateLimit(60);
 }
 
 

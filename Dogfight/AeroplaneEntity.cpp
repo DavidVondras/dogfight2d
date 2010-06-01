@@ -39,9 +39,9 @@ AeroplaneEntity::~AeroplaneEntity(void)
 void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* environementprovider)
 {
 	if(eventListener->GetInputLeft())
-		_vRotation = 4.f;
+		_vRotation = 2.f;
 	if(eventListener->GetInputRight())
-		_vRotation = -4.f;
+		_vRotation = -2.f;
 	if(eventListener->GetInputPropNum())
 		_propelheaderValue = eventListener->GetInputPropNumValue()*0.05f;
 
@@ -53,15 +53,15 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	_FPousee.x = std::cosf(GetRotation()*PI/180.f)*_propelheaderValue;
 	_FPousee.y = std::sinf(GetRotation()*PI/180.f)*_propelheaderValue;
 
-	//_FRx.x = -_vX*std::cosf(GetRotation()*PI/180.f)*0.008f - _vY*std::sinf(GetRotation()*PI/180.f)*0.008f;
-	//_FRx.y = _vX*std::sinf(GetRotation()*PI/180.f)*0.08f + _vY*(std::cosf(GetRotation()*PI/180.f))*0.08f;
-
 	sf::Vector2f velocityLocal = sf::Vector2f(
-		std::cosf(rotationRad)*std::sinf(rotationRad)*_vX,
-		-std::sinf(rotationRad)*std::cosf(rotationRad)*_vY);
-	_FRx.x = velocityLocal.x*0.008f*std::cosf(-rotationRad)*std::sinf(-rotationRad);
-	_FRx.y = -velocityLocal.x*0.008f*std::sinf(-rotationRad)*std::cosf(-rotationRad);
-	//_FRz = TransformToGlobal(sf::Vector2f(0, -velocityLocal.x*0.08f)) - GetPosition();
+		std::cosf(rotationRad)*_vX - std::sinf(rotationRad)*_vY,
+		std::sinf(rotationRad)*_vX + std::cosf(rotationRad)*_vY);
+
+	_FRx.x = -std::cosf(GetRotation()*PI/180.f)*velocityLocal.x*0.008f;
+	_FRx.y = -std::sinf(GetRotation()*PI/180.f)*velocityLocal.x*0.008f;
+	
+	_FRz.x = -std::sinf(GetRotation()*PI/180.f)*velocityLocal.y*0.3f;
+	_FRz.y = std::cosf(GetRotation()*PI/180.f)*velocityLocal.y*0.3f;
 	
 	_vX += _Fpoid.x + _FPousee.x + _FRx.x + _FRz.x;
 	_vY -= _Fpoid.y + _FPousee.y + _FRx.y + _FRz.y;
