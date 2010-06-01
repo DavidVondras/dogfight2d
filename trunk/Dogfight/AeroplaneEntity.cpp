@@ -46,22 +46,24 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 		_propelheaderValue = eventListener->GetInputPropNumValue()*0.05f;
 
 	float rotationRad = GetRotation()*PI/180.f;
+	float cosRotation = std::cosf(rotationRad);
+	float sinRotation = std::sinf(rotationRad);
 
 	_Fpoid.x =0.f;
 	_Fpoid.y = -0.2f;
 	
-	_FPousee.x = std::cosf(GetRotation()*PI/180.f)*_propelheaderValue;
-	_FPousee.y = std::sinf(GetRotation()*PI/180.f)*_propelheaderValue;
+	_FPousee.x = cosRotation*_propelheaderValue;
+	_FPousee.y = sinRotation*_propelheaderValue;
 
 	sf::Vector2f velocityLocal = sf::Vector2f(
-		std::cosf(rotationRad)*_vX - std::sinf(rotationRad)*_vY,
-		std::sinf(rotationRad)*_vX + std::cosf(rotationRad)*_vY);
+		cosRotation*_vX - sinRotation*_vY,
+		sinRotation*_vX + cosRotation*_vY);
 
-	_FRx.x = -std::cosf(GetRotation()*PI/180.f)*velocityLocal.x*0.008f;
-	_FRx.y = -std::sinf(GetRotation()*PI/180.f)*velocityLocal.x*0.008f;
+	_FRx.x = -cosRotation*velocityLocal.x*0.008f;
+	_FRx.y = -sinRotation*velocityLocal.x*0.008f;
 	
-	_FRz.x = -std::sinf(GetRotation()*PI/180.f)*velocityLocal.y*0.3f;
-	_FRz.y = std::cosf(GetRotation()*PI/180.f)*velocityLocal.y*0.3f;
+	_FRz.x = -sinRotation*velocityLocal.y*0.3f;
+	_FRz.y = cosRotation*velocityLocal.y*0.3f;
 	
 	_vX += _Fpoid.x + _FPousee.x + _FRx.x + _FRz.x;
 	_vY -= _Fpoid.y + _FPousee.y + _FRx.y + _FRz.y;
