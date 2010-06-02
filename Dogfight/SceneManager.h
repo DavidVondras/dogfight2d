@@ -5,6 +5,7 @@
 
 #include"EventListener.h"
 #include"EnvironementProvider.h"
+#include "DashBoard.h"
 
 
 ///
@@ -19,6 +20,7 @@ private:
 
 	EventListener* _eventListener;
 	EnvironementProvider* _environementProvider;
+	DashBoard* _dashboard;
 
 	void (*_stepBeginMethod)(void);
 	void (*_stepEndMethod)(void);
