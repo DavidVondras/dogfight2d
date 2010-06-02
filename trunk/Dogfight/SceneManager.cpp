@@ -7,6 +7,7 @@ SceneManager::SceneManager(void):
 	_eventListener(NULL),
 	_environementProvider(NULL),
 	_renderWindow(NULL),
+	_dashboard(NULL),
 	_stepBeginMethod(NULL),
 	_stepEndMethod(NULL),
 	_sceneView(NULL)
@@ -16,12 +17,17 @@ SceneManager::SceneManager(void):
 	_sceneView = new sf::View(sf::FloatRect(0,0,800,600));
 	_eventListener = new EventListener(_renderWindow);
 	_environementProvider = new EnvironementProvider();
+	_dashboard = new DashBoard();
 
 	_sceneImageSprite = new sf::Sprite(*_environementProvider->GetSceneImage(), sf::Vector2f(0.f,0.f));
 	GetEnvironementProvider()->GetAeroplaneArray()[0] = new AeroplaneEntity();
 
 	_renderWindow->UseVerticalSync(true);
 	_renderWindow->SetFramerateLimit(60);
+
+	//Init DashBoard properties listened
+	_dashboard->Add(&(((AeroplaneEntity*)GetEnvironementProvider()->GetAeroplaneArray()[0])->GetVx()), "Vx");
+	_dashboard->Add(&(((AeroplaneEntity*)GetEnvironementProvider()->GetAeroplaneArray()[0])->GetVy()), "Vy");
 }
 
 
@@ -34,6 +40,7 @@ SceneManager::~SceneManager(void)
 	DeleteReference(_eventListener);
 	DeleteReference(_environementProvider);
 	DeleteReference(_renderWindow);
+	DeleteReference(_dashboard);
 	DeleteReference(_sceneView);
 }
 
@@ -53,7 +60,7 @@ void SceneManager::Step(void)
 	//Think methods
 	Think(_environementProvider->GetAeroplaneArray()[0]);
 
-	//Set view
+	//Set scene view
 	_renderWindow->SetView(*_sceneView);
 	_sceneView->SetCenter(sf::Vector2f(
 		GetEnvironementProvider()->GetAeroplaneArray()[0]->GetPosition().x,
@@ -63,6 +70,12 @@ void SceneManager::Step(void)
 	_renderWindow->Clear(sf::Color(150,186,219));
 	Draw(_sceneImageSprite);
 	Draw(GetEnvironementProvider()->GetAeroplaneArray()[0]);
+
+	//Set DashBoard view
+	_renderWindow->SetView(_renderWindow->GetDefaultView());
+
+	//Draw dashboard
+	_dashboard->Draw(_renderWindow);
 
 	//Display renderWindow
 	_renderWindow->Display();

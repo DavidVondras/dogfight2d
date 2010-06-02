@@ -37,6 +37,9 @@
     <ClCompile Include="FrameRateManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DashBoard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EventListener.h">
@@ -62,6 +65,9 @@
     </ClInclude>
     <ClInclude Include="CollisionPoint.h">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DashBoard.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

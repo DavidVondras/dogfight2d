@@ -62,6 +62,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AeroplaneEntity.cpp" />
+    <ClCompile Include="DashBoard.cpp" />
     <ClCompile Include="EnvironementProvider.cpp" />
     <ClCompile Include="EventListener.cpp" />
     <ClCompile Include="FrameRateManager.cpp" />
@@ -72,6 +73,7 @@
     <ClInclude Include="AeroplaneEntity.h" />
     <ClInclude Include="AppSettings.h" />
     <ClInclude Include="CollisionPoint.h" />
+    <ClInclude Include="DashBoard.h" />
     <ClInclude Include="EnvironementProvider.h" />
     <ClInclude Include="EventListener.h" />
     <ClInclude Include="FrameRateManager.h" />

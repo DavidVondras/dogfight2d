@@ -33,6 +33,10 @@ public:
 	AeroplaneEntity(void);
 	~AeroplaneEntity(void);
 
+	//Properties
+	float& GetVx(void) { return _vX; }
+	float& GetVy(void) { return _vY; }
+
 	//Methods
 	virtual void Think(EventListener* eventListener, EnvironementProvider* environementprovider);
 	virtual void Draw(sf::RenderWindow* renderWindow);
