@@ -2,6 +2,7 @@
 #define EVENTLISTNER_H
 
 #include<SFML\Graphics.hpp>
+#include "DashBoard.h"
 
 //Forward declarations
 class EventListener;
@@ -16,6 +17,7 @@ class ObjectEntity: public sf::Sprite
 public:
 	virtual void Think(EventListener* eventListener, EnvironementProvider* environementprovider)=0;
 	virtual void Draw(sf::RenderWindow* renderWindow)=0;
+	virtual void AddDebugFields(DashBoard* dashBoard) {}
 };
 
 #endif

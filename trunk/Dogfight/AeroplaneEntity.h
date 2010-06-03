@@ -15,9 +15,9 @@ class AeroplaneEntity :
 	public ObjectEntity
 {
 private:
-	float _vX, _vY;
+	float _vX, _vY, _vXLocal, _vYLocal;
 	float _vRotation;
-	float _propelheaderValue;
+	float _propelValue;
 	CollisionPoint* _collisionPointArray[ENTITY_MAX_COLLISIONPOINT_NB];
 	int _collisionPointArrayCount;
 
@@ -33,13 +33,10 @@ public:
 	AeroplaneEntity(void);
 	~AeroplaneEntity(void);
 
-	//Properties
-	float& GetVx(void) { return _vX; }
-	float& GetVy(void) { return _vY; }
-
 	//Methods
 	virtual void Think(EventListener* eventListener, EnvironementProvider* environementprovider);
 	virtual void Draw(sf::RenderWindow* renderWindow);
+	virtual void AddDebugFields(DashBoard* dashBoard);
 	void DrawStrengthData(sf::RenderWindow* renderWindow);
 };
 

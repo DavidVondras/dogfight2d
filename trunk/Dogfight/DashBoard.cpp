@@ -40,6 +40,7 @@ void DashBoard::Draw(sf::RenderWindow* renderWindow)
 {
 	sf::String SFstring;
 	SFstring.SetSize(11);
+	SFstring.SetColor(sf::Color(0,0,0));
 
 	for(int i=0; i < _valueListenerArrayCount; i++)
 	{ 
