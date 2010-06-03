@@ -14,6 +14,8 @@
 class SceneManager
 {
 private:
+	float _frameRate;
+
 	sf::Sprite* _sceneImageSprite;
 	sf::RenderWindow* _renderWindow;
 	sf::View* _sceneView;

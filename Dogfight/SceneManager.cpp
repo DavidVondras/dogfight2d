@@ -26,8 +26,8 @@ SceneManager::SceneManager(void):
 	_renderWindow->SetFramerateLimit(60);
 
 	//Init DashBoard properties listened
-	_dashboard->Add(&(((AeroplaneEntity*)GetEnvironementProvider()->GetAeroplaneArray()[0])->GetVx()), "Vx");
-	_dashboard->Add(&(((AeroplaneEntity*)GetEnvironementProvider()->GetAeroplaneArray()[0])->GetVy()), "Vy");
+	_dashboard->Add(&_frameRate, "Framerate");
+	GetEnvironementProvider()->GetAeroplaneArray()[0]->AddDebugFields(_dashboard);
 }
 
 
@@ -73,6 +73,9 @@ void SceneManager::Step(void)
 
 	//Set DashBoard view
 	_renderWindow->SetView(_renderWindow->GetDefaultView());
+
+	//Set FrameRate
+	_frameRate = 1/_renderWindow->GetFrameTime();
 
 	//Draw dashboard
 	_dashboard->Draw(_renderWindow);
