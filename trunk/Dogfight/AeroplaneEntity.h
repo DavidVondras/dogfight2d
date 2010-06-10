@@ -15,8 +15,9 @@ class AeroplaneEntity :
 	public ObjectEntity
 {
 private:
-	float _vX, _vY, _vXLocal, _vYLocal;
+	float _vX, _vY, _vXLocal, _vYLocal, _vNormal;
 	float _cz;
+	float _Moffset, _Melev, _MVcoef, _MVlim, _MelevCoef;
 	float _rotationIncidence;
 	float _vRotation;
 	float _rotateValue;
