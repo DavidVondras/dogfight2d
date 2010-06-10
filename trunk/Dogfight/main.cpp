@@ -2,11 +2,9 @@
 #include <iostream>
 
 #include "SceneManager.h"
-#include "FrameRateManager.h"
 
 
 // Declarations
-FrameRateManager frameRateManager(40.f);
 void EndStepMethod(void);
 
 
@@ -19,7 +17,6 @@ int main(void)
 	sceneManager.SetStepEndMethod(EndStepMethod);
 
 	//Main loop
-	frameRateManager.Reset();
 	do
 	{
 		sceneManager.Step();
@@ -35,8 +32,5 @@ int main(void)
 ///
 void EndStepMethod(void)
 {
-	// Obsolete: managed by verticalSync
-	// TODO: display framerate
-	//if(!frameRateManager.WaitBalance())
-	//	printf("Warning: Framerate is too fast [%f secondes]\n", frameRateManager.GetLastSleepDuration());
+	
 }

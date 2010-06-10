@@ -8,6 +8,7 @@ AeroplaneEntity::AeroplaneEntity(void):
 	_vX(0),
 	_vY(0),
 	_vRotation(0),
+	_rotateValue(0),
 	_propelValue(0),
 	_collisionPointArrayCount(0),
 	_czMin(0.01f),
@@ -38,16 +39,18 @@ AeroplaneEntity::~AeroplaneEntity(void)
 		DeleteReference(_collisionPointArray[i]);
 }
 
+
 #define ComputeCz(ya, xb, yb, x) 6.f*(ya-yb)*(x*x*x/3-xb*x*x/2.f)/(xb*xb*xb) + ya
 void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* environementprovider)
 {
 	// Check input
+	_rotateValue = 0;
 	if(eventListener->GetInputLeft())
-		_vRotation = 2.f;
+		_rotateValue = 1;
 	if(eventListener->GetInputRight())
-		_vRotation = -2.f;
+		_rotateValue = -1;
 	if(eventListener->GetInputPropNum())
-		_propelValue = eventListener->GetInputPropNumValue()*0.05f;
+		_propelValue = eventListener->GetInputPropNumValue()*0.03f;
 
 	// Pre compute values
 	float rotationRad = GetRotation()*PI/180.f;
@@ -59,8 +62,8 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	_vYLocal = sinRotation*_vX + cosRotation*_vY;
 
 	// Cz
-	if(_vXLocal < 0) _cz = 0.03f;
-	else if(_vXLocal > 40.f) _cz = 0.95f;
+	if(_vXLocal < 0) _cz = 0.005f;
+	else if(_vXLocal > 50.f) _cz = 0.95f;
 	else _cz = ComputeCz(0.03f, 40.f, 0.95f, _vXLocal);
 
 	// Weight
@@ -82,7 +85,12 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	_vX += _Fpoid.x + _FPousee.x + _FRx.x + _FRz.x;
 	_vY -= _Fpoid.y + _FPousee.y + _FRx.y + _FRz.y;
 
-	_vRotation *= 0.7f;
+	_rotationIncidence = GetRotation() + std::atan2f(_vY, _vX)*180.f/PI;
+	if(_rotationIncidence > 180) _rotationIncidence -= 360.f;
+	else if(_rotationIncidence < -180) _rotationIncidence += 360.f;
+
+	_vRotation += 1.f*_rotateValue;
+	_vRotation *= 0.6f;
 
 	this->Move(_vX, _vY);
 	this->Rotate(_vRotation);
@@ -105,12 +113,13 @@ void AeroplaneEntity::Draw(sf::RenderWindow* renderWindow)
 
 void AeroplaneEntity::AddDebugFields(DashBoard* dashBoard)
 {
-	dashBoard->Add(&_vX, "Aeroplane Global Vx");
-	dashBoard->Add(&_vY, "Aeroplane Global Vy");
-	dashBoard->Add(&_vXLocal, "Aeroplane Local Vx");
-	dashBoard->Add(&_vYLocal, "Aeroplane Local Vy");
-	dashBoard->Add(&_propelValue, "Aeroplane Propel");
-	dashBoard->Add(&_cz, "Aeroplane Cz");
+	dashBoard->Add(&_vX, "A. Global Vx");
+	dashBoard->Add(&_vY, "A. Global Vy");
+	dashBoard->Add(&_vXLocal, "A. Local Vx");
+	dashBoard->Add(&_vYLocal, "A. Local Vy");
+	dashBoard->Add(&_propelValue, "A. Propel");
+	dashBoard->Add(&_cz, "A. Cz");
+	dashBoard->Add(&_rotationIncidence, "A. Rotation vel offset");
 }
 
 
