@@ -13,7 +13,10 @@ AeroplaneEntity::AeroplaneEntity(void):
 	_collisionPointArrayCount(0),
 	_czMin(0.01f),
 	_czMax(0.95f),
-	_czMaxVelocity(40.f)
+	_czMaxVelocity(40.f),
+	_MVcoef(0.1f),
+	_MVlim(15.f),
+	_MelevCoef(1.f)
 {
 	for(int i=0; i < ENTITY_MAX_COLLISIONPOINT_NB; i++)
 		_collisionPointArray[i] = NULL;
@@ -85,11 +88,31 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	_vX += _Fpoid.x + _FPousee.x + _FRx.x + _FRz.x;
 	_vY -= _Fpoid.y + _FPousee.y + _FRx.y + _FRz.y;
 
+	//Moment offset
 	_rotationIncidence = GetRotation() + std::atan2f(_vY, _vX)*180.f/PI;
 	if(_rotationIncidence > 180) _rotationIncidence -= 360.f;
 	else if(_rotationIncidence < -180) _rotationIncidence += 360.f;
 
-	_vRotation += 1.f*_rotateValue;
+	float _vNormalQuad = _vX*_vX + _vY*_vY;
+	_vNormal = std::sqrtf(_vNormalQuad);
+
+	if(_vNormal >= _MVlim) 
+		_Moffset = -_rotationIncidence*_MVcoef;
+	else if(_vNormal <= -_MVlim) 
+		_Moffset = _rotationIncidence*_MVcoef;
+	else
+		_Moffset = _rotationIncidence*3.f*_MVcoef*(_vNormalQuad*_vNormal/3.f - _MVlim*_MVlim*_vNormal)/(2*_MVlim*_MVlim*_MVlim);
+	this->Rotate(_Moffset);
+
+	//Moment Elev
+	if(_vXLocal >= _MVlim) 
+		_Melev = _MelevCoef;
+	else if(_vXLocal <= 0.f) 
+		_Melev = 0;
+	else
+		_Melev = 6.f*_MelevCoef*(_MVlim*_vXLocal*_vXLocal/2.f - _vXLocal*_vXLocal*_vXLocal/3.f)/(_MVlim*_MVlim*_MVlim);
+
+	_vRotation += 1.f*_rotateValue*_Melev;
 	_vRotation *= 0.6f;
 
 	this->Move(_vX, _vY);
@@ -120,6 +143,8 @@ void AeroplaneEntity::AddDebugFields(DashBoard* dashBoard)
 	dashBoard->Add(&_propelValue, "A. Propel");
 	dashBoard->Add(&_cz, "A. Cz");
 	dashBoard->Add(&_rotationIncidence, "A. Rotation vel offset");
+	dashBoard->Add(&_Moffset, "Moment offset");
+	dashBoard->Add(&_Melev, "Moment Elev");
 }
 
 
