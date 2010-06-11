@@ -10,19 +10,21 @@ AeroplaneEntity::AeroplaneEntity(void):
 	_vRotation(0),
 	_rotateValue(0),
 	_propelValue(0),
+	_propelCoef(0.012f),
 	_collisionPointArrayCount(0),
-	_czMin(0.01f),
+	_cx(0.003f),
+	_czMin(0.02f),
 	_czMax(0.95f),
-	_czMaxVelocity(40.f),
-	_MVcoef(0.1f),
-	_MVlim(15.f),
-	_MelevCoef(1.f)
+	_czMaxVelocity(12.f),
+	_MVcoef(0.12f),
+	_MVlim(12.f),
+	_MelevCoef(2.5f)
 {
 	for(int i=0; i < ENTITY_MAX_COLLISIONPOINT_NB; i++)
 		_collisionPointArray[i] = NULL;
 
 	_imageAeroplane = new sf::Image();
-	if(!_imageAeroplane->LoadFromFile("rafale.png"))
+	if(!_imageAeroplane->LoadFromFile("sopwith.png"))
 	{
 		std::cerr<<"Error while loading rafaletest.png "<<std::endl;
 	}
@@ -30,7 +32,7 @@ AeroplaneEntity::AeroplaneEntity(void):
 
 	//Dummy data
 	SetPosition(100,500);
-	SetCenter(40,26);
+	SetCenter(42,10);
 	_collisionPointArray[0] = new CollisionPoint(0,50);
 }
 
@@ -45,6 +47,7 @@ AeroplaneEntity::~AeroplaneEntity(void)
 
 #define ComputeCz(ya, xb, yb, x) 6.f*(ya-yb)*(x*x*x/3-xb*x*x/2.f)/(xb*xb*xb) + ya
 #define ComputeMOffsetCoef(vCoef, vLim) 3.f*vCoef*(_vNormalQuad*_vNormal/3.f - vLim*vLim*_vNormal)/(2*vLim*vLim*vLim)
+#define ComputeMElevCoef(coef, vLim) 6.f*coef*(vLim*_vXLocal*_vXLocal/2.f - _vXLocal*_vXLocal*_vXLocal/3.f)/(vLim*vLim*vLim)
 void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* environementprovider)
 {
 	// Check input
@@ -54,7 +57,7 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	if(eventListener->GetInputRight())
 		_rotateValue = -1;
 	if(eventListener->GetInputPropNum())
-		_propelValue = eventListener->GetInputPropNumValue()*0.03f;
+		_propelValue = (float)eventListener->GetInputPropNumValue();
 
 	// Pre compute values
 	float rotationRad = GetRotation()*PI/180.f;
@@ -70,21 +73,21 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	_vNormal = std::sqrtf(_vNormalQuad);
 
 	// Cz
-	if(_vXLocal < 0) _cz = 0.005f;
-	else if(_vXLocal > 50.f) _cz = 0.95f;
-	else _cz = ComputeCz(0.03f, 40.f, 0.95f, _vXLocal);
+	if(_vXLocal < 0) _cz = _czMin;
+	else if(_vXLocal > 50.f) _cz = _czMax;
+	else _cz = ComputeCz(_czMin, _czMaxVelocity, _czMax, _vXLocal);
 
 	// Weight
 	_Fpoid.x =0.f;
-	_Fpoid.y = -0.2f;
+	_Fpoid.y = -0.15f;
 	
 	// Propel
-	_FPousee.x = cosRotation*_propelValue;
-	_FPousee.y = sinRotation*_propelValue;
+	_FPousee.x = cosRotation*_propelValue*_propelCoef;
+	_FPousee.y = sinRotation*_propelValue*_propelCoef;
 
 	// FRx
-	_FRx.x = -cosRotation*_vXLocal*0.008f;
-	_FRx.y = -sinRotation*_vXLocal*0.008f;
+	_FRx.x = -cosRotation*_vXLocal*_vXLocal*_cx;
+	_FRx.y = -sinRotation*_vXLocal*_vXLocal*_cx;
 	
 	// FRz
 	_FRz.x = -sinRotation*_vYLocal*_cz;
@@ -99,23 +102,17 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	if(_rotationIncidence > 180.f) _rotationIncidence -= 360.f;
 	else if(_rotationIncidence < -180.f) _rotationIncidence += 360.f;
 
-	if(_vNormal >= _MVlim) 
-		_Moffset = -_rotationIncidence*_MVcoef;
-	else if(_vNormal <= -_MVlim) 
-		_Moffset = _rotationIncidence*_MVcoef;
-	else
-		_Moffset = _rotationIncidence*3.f*_MVcoef*(_vNormalQuad*_vNormal/3.f - _MVlim*_MVlim*_vNormal)/(2*_MVlim*_MVlim*_MVlim);
-	this->Rotate(_Moffset);
+	if(_vNormal >= _MVlim)  _Moffset = -_rotationIncidence*_MVcoef;
+	else if(_vNormal <= -_MVlim) _Moffset = _rotationIncidence*_MVcoef;
+	else _Moffset = _rotationIncidence*ComputeMOffsetCoef(_MVcoef, _MVlim);
 
 	//Moment Elev
-	if(_vXLocal >= _MVlim) 
-		_Melev = _MelevCoef;
-	else if(_vXLocal <= 0.f) 
-		_Melev = 0;
-	else
-		_Melev = 6.f*_MelevCoef*(_MVlim*_vXLocal*_vXLocal/2.f - _vXLocal*_vXLocal*_vXLocal/3.f)/(_MVlim*_MVlim*_MVlim);
+	if(_vXLocal >= _MVlim) _MCelev = _MelevCoef;
+	else if(_vXLocal <= 0.f) _MCelev = 0;
+	else _MCelev = ComputeMElevCoef(_MelevCoef, _MVlim);
 
-	_vRotation += 1.f*_rotateValue*_Melev;
+	this->Rotate(_Moffset);
+	_vRotation += 1.f*_rotateValue*_MCelev;
 	_vRotation *= 0.6f;
 
 	this->Move(_vX, _vY);
@@ -147,7 +144,7 @@ void AeroplaneEntity::AddDebugFields(DashBoard* dashBoard)
 	dashBoard->Add(&_cz, "A. Cz");
 	dashBoard->Add(&_rotationIncidence, "A. Rotation vel offset");
 	dashBoard->Add(&_Moffset, "Moment offset");
-	dashBoard->Add(&_Melev, "Moment Elev");
+	dashBoard->Add(&_MCelev, "Moment Elev");
 }
 
 
