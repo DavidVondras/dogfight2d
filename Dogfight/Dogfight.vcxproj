@@ -81,10 +81,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+    <None Include="map.png" />
     <None Include="maptest.png">
       <FileType>Document</FileType>
     </None>
     <None Include="maptest_collisionmask.png" />
+    <None Include="rafale.png" />
     <None Include="rafaletest.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

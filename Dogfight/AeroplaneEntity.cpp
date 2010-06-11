@@ -22,7 +22,7 @@ AeroplaneEntity::AeroplaneEntity(void):
 		_collisionPointArray[i] = NULL;
 
 	_imageAeroplane = new sf::Image();
-	if(!_imageAeroplane->LoadFromFile("rafaletest.png"))
+	if(!_imageAeroplane->LoadFromFile("rafale.png"))
 	{
 		std::cerr<<"Error while loading rafaletest.png "<<std::endl;
 	}
@@ -30,7 +30,7 @@ AeroplaneEntity::AeroplaneEntity(void):
 
 	//Dummy data
 	SetPosition(100,500);
-	SetCenter(38,40);
+	SetCenter(40,26);
 	_collisionPointArray[0] = new CollisionPoint(0,50);
 }
 
@@ -44,6 +44,7 @@ AeroplaneEntity::~AeroplaneEntity(void)
 
 
 #define ComputeCz(ya, xb, yb, x) 6.f*(ya-yb)*(x*x*x/3-xb*x*x/2.f)/(xb*xb*xb) + ya
+#define ComputeMOffsetCoef(vCoef, vLim) 3.f*vCoef*(_vNormalQuad*_vNormal/3.f - vLim*vLim*_vNormal)/(2*vLim*vLim*vLim)
 void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* environementprovider)
 {
 	// Check input
@@ -63,6 +64,10 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	// Local velocity
 	_vXLocal = cosRotation*_vX - sinRotation*_vY;
 	_vYLocal = sinRotation*_vX + cosRotation*_vY;
+
+	// Normal velocity
+	_vNormalQuad = _vX*_vX + _vY*_vY;
+	_vNormal = std::sqrtf(_vNormalQuad);
 
 	// Cz
 	if(_vXLocal < 0) _cz = 0.005f;
@@ -85,16 +90,14 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	_FRz.x = -sinRotation*_vYLocal*_cz;
 	_FRz.y = cosRotation*_vYLocal*_cz;
 	
+	// F total
 	_vX += _Fpoid.x + _FPousee.x + _FRx.x + _FRz.x;
 	_vY -= _Fpoid.y + _FPousee.y + _FRx.y + _FRz.y;
 
 	//Moment offset
 	_rotationIncidence = GetRotation() + std::atan2f(_vY, _vX)*180.f/PI;
-	if(_rotationIncidence > 180) _rotationIncidence -= 360.f;
-	else if(_rotationIncidence < -180) _rotationIncidence += 360.f;
-
-	float _vNormalQuad = _vX*_vX + _vY*_vY;
-	_vNormal = std::sqrtf(_vNormalQuad);
+	if(_rotationIncidence > 180.f) _rotationIncidence -= 360.f;
+	else if(_rotationIncidence < -180.f) _rotationIncidence += 360.f;
 
 	if(_vNormal >= _MVlim) 
 		_Moffset = -_rotationIncidence*_MVcoef;
@@ -119,10 +122,10 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	this->Rotate(_vRotation);
 
 	// Dummy collisions
-	if(GetPosition().y > 550)
+	if(GetPosition().y > 525)
 	{
 		_vY = 0;
-		SetPosition(GetPosition().x, 550);
+		SetPosition(GetPosition().x, 525);
 	}
 }
 
