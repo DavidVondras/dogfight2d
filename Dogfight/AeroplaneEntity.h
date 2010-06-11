@@ -16,12 +16,12 @@ class AeroplaneEntity :
 {
 private:
 	float _vX, _vY, _vXLocal, _vYLocal, _vNormal, _vNormalQuad;
-	float _cz;
-	float _Moffset, _Melev, _MVcoef, _MVlim, _MelevCoef;
+	float _cz, _cx;
+	float _Moffset, _MCelev, _MVcoef, _MVlim, _MelevCoef;
 	float _rotationIncidence;
 	float _vRotation;
 	float _rotateValue;
-	float _propelValue;
+	float _propelValue, _propelCoef;
 	float _czMin,_czMax, _czMaxVelocity;
 	CollisionPoint* _collisionPointArray[ENTITY_MAX_COLLISIONPOINT_NB];
 	int _collisionPointArrayCount;
