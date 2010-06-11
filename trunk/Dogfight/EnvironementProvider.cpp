@@ -9,7 +9,7 @@ EnvironementProvider::EnvironementProvider(void)
 	_sceneCollisionMask(NULL)
 {
 	_sceneImage = new sf::Image();
-	if(!_sceneImage->LoadFromFile("maptest.png"))
+	if(!_sceneImage->LoadFromFile("map.png"))
 	{
 		std::cerr<<"Error while loading maptest.png"<<std::endl;
 	}

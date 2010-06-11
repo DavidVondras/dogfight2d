@@ -75,5 +75,11 @@
       <Filter>Image Files</Filter>
     </None>
     <None Include="ClassDiagram1.cd" />
+    <None Include="rafale.png">
+      <Filter>Image Files</Filter>
+    </None>
+    <None Include="map.png">
+      <Filter>Image Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
