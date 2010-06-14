@@ -1,5 +1,3 @@
-#Equations leading aeroplane comportement
-
 = Translations =
 
 TODO
