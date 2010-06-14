@@ -1,0 +1,14 @@
+#Equations leading aeroplane comportement
+
+= Translations =
+
+TODO
+
+
+= Rototations =
+
+TODO
+
+= Collisions =
+
+TODO
