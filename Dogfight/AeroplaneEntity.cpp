@@ -10,21 +10,21 @@ AeroplaneEntity::AeroplaneEntity(void):
 	_vRotation(0),
 	_rotateValue(0),
 	_propelValue(0),
-	_propelCoef(0.012f),
+	_propelCoef(0.04f),
 	_collisionPointArrayCount(0),
-	_cx(0.003f),
-	_czMin(0.02f),
-	_czMax(0.95f),
-	_czMaxVelocity(12.f),
-	_MVcoef(0.12f),
-	_MVlim(12.f),
-	_MelevCoef(2.5f)
+	_cx(0.0006f),
+	_czMin(0.01f),
+	_czMax(0.9f),
+	_czMaxVelocity(45.f),
+	_MVcoef(0.04f),
+	_MVlim(30.f),
+	_MelevCoef(1.3f)
 {
 	for(int i=0; i < ENTITY_MAX_COLLISIONPOINT_NB; i++)
 		_collisionPointArray[i] = NULL;
 
 	_imageAeroplane = new sf::Image();
-	if(!_imageAeroplane->LoadFromFile("sopwith.png"))
+	if(!_imageAeroplane->LoadFromFile("mustang.png"))
 	{
 		std::cerr<<"Error while loading rafaletest.png "<<std::endl;
 	}
@@ -32,7 +32,7 @@ AeroplaneEntity::AeroplaneEntity(void):
 
 	//Dummy data
 	SetPosition(100,500);
-	SetCenter(42,10);
+	SetCenter(96,40);
 	_collisionPointArray[0] = new CollisionPoint(0,50);
 }
 
@@ -79,7 +79,7 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 
 	// Weight
 	_Fpoid.x =0.f;
-	_Fpoid.y = -0.15f;
+	_Fpoid.y = -0.5f;
 	
 	// Propel
 	_FPousee.x = cosRotation*_propelValue*_propelCoef;
@@ -119,10 +119,10 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	this->Rotate(_vRotation);
 
 	// Dummy collisions
-	if(GetPosition().y > 525)
+	if(GetPosition().y > 528)
 	{
 		_vY = 0;
-		SetPosition(GetPosition().x, 525);
+		SetPosition(GetPosition().x, 528);
 	}
 }
 

@@ -15,7 +15,9 @@ private:
 		_inputUp,
 		_inputDown,
 		_inputPropNum,
-		_inputPropNumValue;
+		_inputPropNumValue,
+		_inputZoomIn,
+		_inputZoomOut;
 	sf::RenderWindow* _renderWindow;
 
 public:
@@ -35,6 +37,8 @@ public:
 	int GetInputDown(void) { return _inputDown; }
 	int GetInputPropNum(void) { return _inputPropNum; }
 	int GetInputPropNumValue(void) { return _inputPropNumValue; }
+	int GetInputZoomIn(void) { return _inputZoomIn; }
+	int GetInputZoomOut(void) { return _inputZoomOut; }
 
 	//Methods
 	void CheckEvents(void);

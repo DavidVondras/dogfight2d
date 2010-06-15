@@ -17,6 +17,8 @@ void EventListener::CheckEvents(void)
 
 			_inputPropNum = false;
 			_inputPropNumValue = false;
+			_inputZoomIn = false;
+			_inputZoomOut = false;
 			switch(Event.Key.Code)
 			{
 			// Prop key
@@ -59,6 +61,14 @@ void EventListener::CheckEvents(void)
 			case sf::Key::Num9:
 				_inputPropNum = true;
 				_inputPropNumValue = 9;
+				break;
+
+			//Zomm keys
+			case sf::Key::PageUp:
+				_inputZoomIn = true;
+				break;
+			case sf::Key::PageDown:
+				_inputZoomOut = true;
 				break;
 			default: break;
 			}
