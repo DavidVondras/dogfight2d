@@ -15,6 +15,7 @@ class SceneManager
 {
 private:
 	float _frameRate;
+	float _zoomFactor;
 
 	sf::Sprite* _sceneImageSprite;
 	sf::RenderWindow* _renderWindow;

@@ -10,11 +10,13 @@ SceneManager::SceneManager(void):
 	_dashboard(NULL),
 	_stepBeginMethod(NULL),
 	_stepEndMethod(NULL),
-	_sceneView(NULL)
+	_sceneView(NULL),
+	_zoomFactor(1)
 {
 	//Create instances
 	_renderWindow = new sf::RenderWindow(sf::VideoMode(800,600, 32), "== Dogfight ==");
 	_sceneView = new sf::View(sf::FloatRect(0,0,800,600));
+	//_sceneView = new sf::View(sf::FloatRect(0,0,1600,1200));
 	_eventListener = new EventListener(_renderWindow);
 	_environementProvider = new EnvironementProvider();
 	_dashboard = new DashBoard();
@@ -65,6 +67,7 @@ void SceneManager::Step(void)
 	_sceneView->SetCenter(sf::Vector2f(
 		GetEnvironementProvider()->GetAeroplaneArray()[0]->GetPosition().x,
 		std::min<float>(GetEnvironementProvider()->GetAeroplaneArray()[0]->GetPosition().y,_renderWindow->GetHeight()/2.f)));
+	_sceneView->SetHalfSize(400.f*_zoomFactor, 300.f*_zoomFactor);
 
 	//Draw methods
 	_renderWindow->Clear(sf::Color(150,186,219));
@@ -91,6 +94,11 @@ void SceneManager::Step(void)
 
 void SceneManager::Think(ObjectEntity* objectEntity)
 {
+	if(_eventListener->GetInputZoomIn() && _zoomFactor < 2)
+		_zoomFactor += 0.1f;
+	if(_eventListener->GetInputZoomOut() && _zoomFactor > 1)
+		_zoomFactor -= 0.1f;
+
 	sf::Vector2f objectEntityPosition = objectEntity->GetPosition();
 	float sceneWidth = (float)_environementProvider->GetSceneWidth();
 
