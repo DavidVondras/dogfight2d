@@ -1,0 +1,124 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 0.8.5 ] */
+
+/* [wxMaxima: title   start ]
+Aeroplane Equations
+   [wxMaxima: title   end   ] */
+
+/* [wxMaxima: section start ]
+Aerodynamic equations
+   [wxMaxima: section end   ] */
+
+/* [wxMaxima: subsect start ]
+hypothetical declarations
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+-Each vector is defined in global system except those suffixed by "_local"
+-Angles units are in radian
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+X : 1$ Y : 2$
+vect(x,y) := [x, y]$
+g : vect(0, 9.81)$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Polygone formula definition
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+'(integrate(PolyBezierCoef*(x-xa)*(x-xb),x) + PolyBezierCste);
+ev(%)$ 
+PolyBezier(x,xa,ya,xb,yb) := ''%;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Solving equation with:
+f(xa) = ya
+f(xb) = yb
+f(0) = cste
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+solve(
+    [PolyBezier(0,xa,ya,xb,yb) = PolyBezierCste,
+    PolyBezier(xa,xa,ya,xb,yb) = ya,
+    PolyBezier(xb,xa,ya,xb,yb) = yb], 
+    [PolyBezierCste, PolyBezierCoef] );
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Acceletation definition
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: input   start ] */
+a : '(g + (F_cx + F_cz + F_propel)/m);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Velocity definition
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+at t=t0:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+v0 : [v0_X, v0_Y]$
+v0_local : vect(
+    cos(rotation)*v0[X],
+    sin(rotation)*v0[Y]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+at t0 + t (considering that t is a small delta):
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+v(t) := v0 + ''a*t;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Fx Frictional forces definition
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+Fx is a frictional force depending on cx coefficient
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+F_cx : vect(
+    -cos(rotation)*v0_local[X]*cx,
+    sin(rotation)*v0_local[X]*cx);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Definition of cx coefficient
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+cx : cx_cste$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Fz Frictional forces definition
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+Fz is a frictional force depending on cz coefficient
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+F_cz : vect(
+    -sin(rotation)*v0_local[Y]*cz,
+    -cos(rotation)*v0_local[Y]*cz);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Definition of cz coefficient
+   [wxMaxima: comment end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$

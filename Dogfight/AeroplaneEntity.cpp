@@ -45,7 +45,7 @@ AeroplaneEntity::~AeroplaneEntity(void)
 }
 
 
-#define ComputeCz(ya, xb, yb, x) 6.f*(ya-yb)*(x*x*x/3-xb*x*x/2.f)/(xb*xb*xb) + ya
+#define ComputeCz(czMin, czMaxVelocity, czMax, vx) 6.f*(czMin-czMax)*(vx*vx*vx/3-czMaxVelocity*vx*vx/2.f)/(czMaxVelocity*czMaxVelocity*czMaxVelocity) + czMin
 #define ComputeMOffsetCoef(vCoef, vLim) 3.f*vCoef*(_vNormalQuad*_vNormal/3.f - vLim*vLim*_vNormal)/(2*vLim*vLim*vLim)
 #define ComputeMElevCoef(coef, vLim) 6.f*coef*(vLim*_vXLocal*_vXLocal/2.f - _vXLocal*_vXLocal*_vXLocal/3.f)/(vLim*vLim*vLim)
 void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* environementprovider)
