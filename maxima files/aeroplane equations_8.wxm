@@ -61,7 +61,7 @@ define(PolyBezier(x,xa,ya,xb,yb), PolyBezier(x,xa,ya,xb,yb));
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: comment start ]
-Bezier formula final definition
+Bezier formula final definition (taken into account range definition)
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -81,7 +81,7 @@ Acceletation definition
    [wxMaxima: subsect end   ] */
 
 /* [wxMaxima: input   start ] */
-a : '(gravity + (F_cx + F_cz + F_propel)/m);
+a : '(gravity + (F_cx(v0_local[X], rotation0) + F_cz(v0_local[X], v0_local[Y], rotation0) + F_propel(propel_value))/m);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: subsect start ]
@@ -127,7 +127,7 @@ F_propel Propel force definition
    [wxMaxima: subsect end   ] */
 
 /* [wxMaxima: input   start ] */
-F_propel : propel_max*propel_value;
+F_propel(propel_value) := propel_max*propel_value;
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: subsect start ]
@@ -139,9 +139,10 @@ F_cx is a frictional force depending on cx coefficient
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
-F_cx : vect(
-    -cos(rotation0)*v0_local[X]*cx,
-    sin(rotation0)*v0_local[X]*cx);
+F_cx(v_local_x, rotation) := vect(
+    -cos(rotation)*v_local_x*cx,
+    sin(rotation)*v_local_x*cx)$
+F_cx(v_local_x, rotation);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: comment start ]
@@ -161,9 +162,10 @@ Fz is a frictional force depending on cz coefficient
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
-F_cz : vect(
-    '(-sin(rotation0)*v0_local[Y]*cz(v_local[X])),
-    '(-cos(rotation0)*v0_local[Y]*cz(v_local[X])));
+F_cz(v_local_x, v_local_y, rotation) := vect(
+    '(-sin(rotation)*v_local_y*cz(v_local_x)),
+    '(-cos(rotation)*v_local_y*cz(v_local_x)))$
+F_cz(v_local_x, v_local_y, rotation);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: comment start ]
@@ -171,7 +173,7 @@ Definition of cz coefficient
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
-define (cz(v_local_X), PolyBezier(v_local_X, 0, cz_min, v_cz_limite, cz_max));
+define (cz(v_local_x), PolyBezier(v_local_x, 0, cz_min, v_cz_limite, cz_max));
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: section start ]

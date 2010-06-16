@@ -16,7 +16,6 @@ SceneManager::SceneManager(void):
 	//Create instances
 	_renderWindow = new sf::RenderWindow(sf::VideoMode(800,600, 32), "== Dogfight ==");
 	_sceneView = new sf::View(sf::FloatRect(0,0,800,600));
-	//_sceneView = new sf::View(sf::FloatRect(0,0,1600,1200));
 	_eventListener = new EventListener(_renderWindow);
 	_environementProvider = new EnvironementProvider();
 	_dashboard = new DashBoard();
