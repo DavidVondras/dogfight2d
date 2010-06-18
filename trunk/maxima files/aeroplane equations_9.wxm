@@ -1,6 +1,10 @@
 /* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
 /* [ Created with wxMaxima version 0.8.5 ] */
 
+/* [wxMaxima: comment start ]
+Worksheet initialization
+   [wxMaxima: comment end   ] */
+
 /* [wxMaxima: input   start ] */
 kill(all);
 /* [wxMaxima: input   end   ] */
@@ -13,6 +17,10 @@ Aeroplane Equations
 Hypothetical declarations
    [wxMaxima: section end   ] */
 
+/* [wxMaxima: subsect start ]
+Data
+   [wxMaxima: subsect end   ] */
+
 /* [wxMaxima: comment start ]
 -Each vector is defined in global system except those suffixed by "_local"
 -Angles units are in radian
@@ -23,6 +31,10 @@ X : 1$ Y : 2$
 vect(x,y) := [x, y]$
 gravity : vect(0, 9.81)$
 /* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Bezier
+   [wxMaxima: subsect end   ] */
 
 /* [wxMaxima: comment start ]
 Polygone formula definition
@@ -70,6 +82,32 @@ if x < xa then ya
 else if x > xb then yb
 else PolyBezier(x, xa, ya, xb, yb);
 wxplot2d(Bezier(x,0,0,10,5), [x,-5,15], [y, -2, 7])$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Scalar product operation definition
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+Definition of the 2D scalar product operation
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Scalar_product(v1,v2) := v1[X]*v2[X] + v1[Y]*v2[Y];
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Rotatation operation definition
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+Definition of the vector 2D rotation operation
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Rotate(vector, angle) := vect( 
+    vector[X]*cos(angle) - vector[Y]*sin(angle), 
+    vector[Y]*cos(angle) + vector[X]*sin(angle));
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: section start ]
@@ -200,6 +238,10 @@ v_rotation(t) := v_rotation0 + ''a_rotation*t;
 Rotation velocity incidence definition
    [wxMaxima: subsect end   ] */
 
+/* [wxMaxima: comment start ]
+Definition of the rotation between airplane rotation angle and velocity orientation
+   [wxMaxima: comment end   ] */
+
 /* [wxMaxima: input   start ] */
 rotation_velocity_i : rotation0 + atan2(v['Y], v['X]);
 /* [wxMaxima: input   end   ] */
@@ -207,6 +249,10 @@ rotation_velocity_i : rotation0 + atan2(v['Y], v['X]);
 /* [wxMaxima: subsect start ]
 M_velocity_i Momentum velocity incidence definition
    [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+Definition of the momentum cased by the incidence of the airplane between airplane rotation angle and velocity orientation.
+   [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
 M_velocity_i(v_normal) := PolyBezier(v_normal, -v_m_velocity_i_limite, -m_velocity_i_coef, v_m_velocity_i_limite, m_velocity_i_coef)$
@@ -217,6 +263,10 @@ M_velocity_i(v_normal);
 M_elevator Momentum elevator definition
    [wxMaxima: subsect end   ] */
 
+/* [wxMaxima: comment start ]
+Definition of the momentum caused by elevator action
+   [wxMaxima: comment end   ] */
+
 /* [wxMaxima: input   start ] */
 M_elevator(v_local_x, elevator_value) := PolyBezier(v_local_x, 0, 0, v_m_elevator_limite, m_elevator_coef)*elevator_value$
 M_elevator(v_local_x, elevator_value);
@@ -226,9 +276,57 @@ M_elevator(v_local_x, elevator_value);
 Collisions equations
    [wxMaxima: section end   ] */
 
+/* [wxMaxima: subsect start ]
+Collision point definition
+   [wxMaxima: subsect end   ] */
+
 /* [wxMaxima: comment start ]
-TODO
+Coordinates of the collision point definition
    [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+C_point: vect( c_point_x, c_point_y );
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Collision reaction force definition in C
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+Definition of the reaction force from C collision point.
+    -We consider that collision reaction formula is only for landing -> we can consider the x component is null.
+    -The aim of this force is to make the resulting velocity = 0. To make this formula faster, this computation is made this way.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Rc : vect( 0, -'v(t)['Y]*m );
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Collision reaction force definition in G
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+Definition of the reaction force from Gravity center of the airplane
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Rg : vect( 0, Scalar_product(Rc, Rotate(C_point, rotation)) );
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: subsect start ]
+Rotation redefinition after collision application
+   [wxMaxima: subsect end   ] */
+
+/* [wxMaxima: comment start ]
+Momentum of the reaction force is not computed. rotation is processed again in order to put the collision point on collision surface.
+The following formula must be processed when Collision reaction forces have been applied to the velocity.
+    - C_offset is the distance from C point and the collision surface along Y axe
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+rotation : asin(airplane['Y]/C_offset);
+/* [wxMaxima: input   end   ] */
 
 /* Maxima can't load/batch files which end with a comment! */
 "Created with wxMaxima"$
