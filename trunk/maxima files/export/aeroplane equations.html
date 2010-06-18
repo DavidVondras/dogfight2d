@@ -1,0 +1,898 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+ <HEAD>
+  <TITLE>wxMaxima HTML export</TITLE>
+  <META NAME="generator" CONTENT="wxMaxima">
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+  <STYLE TYPE="text/css">
+body {
+  font-family: Arial;
+  background-color: rgb(255,255,255);
+}
+.input {
+  color: rgb(73,73,73);
+}
+.comment {
+  font-family: Arial;
+  color: rgb(0,87,232);
+  background-color: rgb(255,255,255);
+  padding: 2mm;
+}
+.image {
+  font-family: Arial;
+  color: rgb(0,87,232);
+  padding: 2mm;
+}
+.section {
+  font-family: Arial;
+  color: rgb(44,44,44);
+  font-weight: bold;
+  font-size: 1.5em;
+  padding: 2mm;
+}
+.subsect {
+  font-family: Arial;
+  color: rgb(48,48,48);
+  font-weight: bold;
+  font-size: 1.2em;
+  padding: 2mm;
+}
+.title {
+  font-family: Arial;
+  color: rgb(25,25,25);
+  font-weight: bold;
+  font-size: 2em;
+  padding: 2mm;
+}
+.prompt {
+  color: rgb(108,108,108);
+}
+table {
+  border: 0px;
+}
+td {
+  vertical-align: top;
+  padding: 1mm;
+}
+  </STYLE>
+ </HEAD>
+ <BODY>
+
+<!---------------------------------------------------------->
+<!--          Created with wxMaxima version 0.8.5         -->
+<!---------------------------------------------------------->
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Worksheet initialization
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i1) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+kill(all);
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_0.png">
+</P>
+
+
+<!-- Title cell -->
+
+
+<P CLASS="title">
+Aeroplane Equations
+</P>
+
+
+<!-- Section cell -->
+
+
+<P CLASS="section">
+ 1 Hypothetical declarations
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  1.1 Data
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+-Each vector is defined in global system except those suffixed by "_local"<BR>
+-Angles units are in radian
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i1) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+X : 1$ Y : 2$<BR>
+vect(x,y) := [x, y]$<BR>
+gravity : vect(0, 9.81)$
+  </SPAN></TD>
+</TR></TABLE>
+
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  1.2 Bezier
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Polygone formula definition
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i5) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+'(integrate(PolyBezierCoef*(x-xa)*(x-xb),x) + PolyBezierCste);<BR>
+ev(%)$ <BR>
+PolyBezier(x,xa,ya,xb,yb) := ''%;
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_1.png">
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Solving equation with:<BR>
+f(xa) = ya<BR>
+f(xb) = yb<BR>
+f(0) = cste
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i8) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+programmode : true$<BR>
+globalsolve : true$<BR>
+<BR>
+solve(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;[PolyBezier(0,xa,ya,xb,yb) = PolyBezierCste,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;PolyBezier(xa,xa,ya,xb,yb) = ya,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;PolyBezier(xb,xa,ya,xb,yb) = yb], <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;[PolyBezierCste, PolyBezierCoef] );
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_2.png">
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Reformat PolyBezier function and draw a sample function
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i11) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+define(PolyBezier(x,xa,ya,xb,yb), PolyBezier(x,xa,ya,xb,yb));
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_3.png">
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Bezier formula final definition (taken into account range definition)
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i12) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+Bezier(x, xa, ya, xb, yb) :=<BR>
+if x < xa then ya<BR>
+else if x > xb then yb<BR>
+else PolyBezier(x, xa, ya, xb, yb);<BR>
+wxplot2d(Bezier(x,0,0,10,5), [x,-5,15], [y, -2, 7])$
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_4.png">
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  1.3 Scalar product operation definition
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Definition of the 2D scalar product operation
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i14) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+Scalar_product(v1,v2) := v1[X]*v2[X] + v1[Y]*v2[Y];
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_5.png">
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  1.4 Rotatation operation definition
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Definition of the vector 2D rotation operation
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i15) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+Rotate(vector, angle) := vect( <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;vector[X]*cos(angle) - vector[Y]*sin(angle), <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;vector[Y]*cos(angle) + vector[X]*sin(angle));
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_6.png">
+</P>
+
+
+<!-- Section cell -->
+
+
+<P CLASS="section">
+ 2 Aerodynamic equations (translation vectors)
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  2.1 Acceletation definition
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i16) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+a : '(gravity + (F_cx(v0_local[X], rotation0) + F_cz(v0_local[X], v0_local[Y], rotation0) + F_propel(propel_value))/m);
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_7.png">
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  2.2 Velocity definition
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+at t=t0:
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i17) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+v0 : [v0_X, v0_Y]$<BR>
+v0_local : vect(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;cos(rotation0)*v0[X],<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sin(rotation0)*v0[Y]);
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_8.png">
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+at t0 + t (considering that t is a small delta):
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i19) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+v(t) := v0 + a*t$ <BR>
+v(t);
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_9.png">
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i21) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+v_local : vect(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;'( cos(rotation0)*v(t)[X] ),<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;'( sin(rotation0)*v(t)[Y] ));
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_10.png">
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Normal velocity
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i22) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+v_normal(t) := sqrt( ( v(t)[X] )^2 + ( v(t)[Y] )^2 );
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_11.png">
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  2.3 F_propel Propel force definition
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i23) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+F_propel(propel_value) := propel_max*propel_value;
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_12.png">
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  2.4 F_cx Frictional force definition
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+F_cx is a frictional force depending on cx coefficient
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i24) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+F_cx(v_local_x, rotation) := vect(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;-cos(rotation)*v_local_x*cx,<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;sin(rotation)*v_local_x*cx)$<BR>
+F_cx(v_local_x, rotation);
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_13.png">
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Definition of cx coefficient
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i26) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+cx : cx_cste$
+  </SPAN></TD>
+</TR></TABLE>
+
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  2.5 F_cz Frictional force definition
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Fz is a frictional force depending on cz coefficient
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i27) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+F_cz(v_local_x, v_local_y, rotation) := vect(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;'(-sin(rotation)*v_local_y*cz(v_local_x)),<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;'(-cos(rotation)*v_local_y*cz(v_local_x)))$<BR>
+F_cz(v_local_x, v_local_y, rotation);
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_14.png">
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Definition of cz coefficient
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i29) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+define (cz(v_local_x), PolyBezier(v_local_x, 0, cz_min, v_cz_limite, cz_max));
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_15.png">
+</P>
+
+
+<!-- Section cell -->
+
+
+<P CLASS="section">
+ 3 Aerodynamic equations (momentum vectors)
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  3.1 Rotation acceleration definition
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i30) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+a_rotation : (M_velocity_i(v_normal) + M_elevator('v0_local['X], elevator_value))/m;
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_16.png">
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  3.2 Rotation velocity definition
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i31) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+v_rotation(t) := v_rotation0 + ''a_rotation*t;
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_17.png">
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  3.3 Rotation velocity incidence definition
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Definition of the rotation between airplane rotation angle and velocity orientation
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i32) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+rotation_velocity_i : rotation0 + atan2(v['Y], v['X]);
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_18.png">
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  3.4 M_velocity_i Momentum velocity incidence definition
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Definition of the momentum cased by the incidence of the airplane between airplane rotation angle and velocity orientation.
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i33) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+M_velocity_i(v_normal) := PolyBezier(v_normal, -v_m_velocity_i_limite, -m_velocity_i_coef, v_m_velocity_i_limite, m_velocity_i_coef)$<BR>
+M_velocity_i(v_normal);
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_19.png">
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  3.5 M_elevator Momentum elevator definition
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Definition of the momentum caused by elevator action
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i35) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+M_elevator(v_local_x, elevator_value) := PolyBezier(v_local_x, 0, 0, v_m_elevator_limite, m_elevator_coef)*elevator_value$<BR>
+M_elevator(v_local_x, elevator_value);
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_20.png">
+</P>
+
+
+<!-- Section cell -->
+
+
+<P CLASS="section">
+ 4 Collisions equations
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  4.1 Collision point definition
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Coordinates of the collision point definition
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i37) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+C_point: vect( c_point_x, c_point_y );
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_21.png">
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  4.2 Collision reaction force definition in C
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Definition of the reaction force from C collision point.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;-We consider that collision reaction formula is only for landing -> we can consider the x component is null.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;-The aim of this force is to make the resulting velocity = 0. To make this formula faster, this computation is made this way.
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i38) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+Rc : vect( 0, -'v(t)['Y]*m );
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_22.png">
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  4.3 Collision reaction force definition in G
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Definition of the reaction force from Gravity center of the airplane
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i39) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+Rg : vect( 0, Scalar_product(Rc, Rotate(C_point, rotation)) );
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_23.png">
+</P>
+
+
+<!-- Subsection cell -->
+
+
+<P CLASS="subsect">
+  4.4 Rotation redefinition after collision application
+</P>
+
+
+<!-- Text cell -->
+
+
+<P CLASS="comment">
+Momentum of the reaction force is not computed. rotation is processed again in order to put the collision point on collision surface.<BR>
+The following formula must be processed when Collision reaction forces have been applied to the velocity.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;- C_offset is the distance from C point and the collision surface along Y axe
+</P>
+
+
+<!-- Code cell -->
+
+
+<P><TABLE><TR><TD>
+  <SPAN CLASS="prompt">
+(%i40) 
+  </SPAN></TD>
+  <TD><SPAN CLASS="input">
+rotation : asin(airplane['Y]/C_offset);
+  </SPAN></TD>
+</TR></TABLE>
+  <BR>
+  <IMG ALT="Result" SRC="aeroplane equations_img/aeroplane equations_24.png">
+</P>
+
+ <HR>
+ <SMALL> Created with <A HREF="http://wxmaxima.sourceforge.net/">wxMaxima</A>.</SMALL>
+
+ </BODY>
+</HTML>
