@@ -15,9 +15,9 @@ class RenderWindow;
 class ObjectEntity: public sf::Sprite
 {
 public:
-	virtual void Think(EventListener* eventListener, EnvironementProvider* environementprovider)=0;
-	virtual void Draw(sf::RenderWindow* renderWindow)=0;
-	virtual void AddDebugFields(DashBoard* dashBoard) {}
+	virtual void Think(EventListener* const eventListener, EnvironementProvider* const environementprovider)=0;
+	virtual void Draw(sf::RenderWindow* const renderWindow)=0;
+	virtual void AddDebugFields(DashBoard* const dashBoard) {}
 };
 
 #endif

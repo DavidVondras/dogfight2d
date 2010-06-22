@@ -45,6 +45,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>sfml-main-d.lib;sfml-system-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/VERBOSE:LIB %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -72,7 +73,6 @@
   <ItemGroup>
     <ClInclude Include="AeroplaneEntity.h" />
     <ClInclude Include="AppSettings.h" />
-    <ClInclude Include="CollisionPoint.h" />
     <ClInclude Include="DashBoard.h" />
     <ClInclude Include="EnvironementProvider.h" />
     <ClInclude Include="EventListener.h" />
@@ -86,6 +86,7 @@
       <FileType>Document</FileType>
     </None>
     <None Include="maptest_collisionmask.png" />
+    <None Include="mustang.png" />
     <None Include="rafale.png" />
     <None Include="rafaletest.png" />
   </ItemGroup>

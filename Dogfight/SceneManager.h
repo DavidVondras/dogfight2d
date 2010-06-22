@@ -34,17 +34,17 @@ public:
 	~SceneManager(void);
 
 	//Properties
-	EventListener* GetEventListener(void) { return _eventListener; }
-	EnvironementProvider* GetEnvironementProvider(void) { return _environementProvider; }
-	sf::RenderWindow* GetRenderWindow(void) { return _renderWindow; }
+	EventListener* const GetEventListener(void) const { return _eventListener; }
+	EnvironementProvider* const GetEnvironementProvider(void) const { return _environementProvider; }
+	sf::RenderWindow* const GetRenderWindow(void) const { return _renderWindow; }
 	void SetStepBeginMethod(void (*value)(void)) { _stepBeginMethod = value; }
 	void SetStepEndMethod(void (*value)(void)) { _stepEndMethod = value; }
 
 	//Methods
 	void Step(void);
-	void Think(ObjectEntity* objectEntity);
-	void Draw(ObjectEntity* objectEntity);
-	void Draw(sf::Sprite* sprite);
+	void Think(ObjectEntity* const objectEntity);
+	void Draw(ObjectEntity* const objectEntity);
+	void Draw(sf::Sprite* const sprite);
 };
 
 #endif

@@ -18,27 +18,30 @@ private:
 		_inputPropNumValue,
 		_inputZoomIn,
 		_inputZoomOut;
-	sf::RenderWindow* _renderWindow;
+	sf::RenderWindow* const _renderWindow;
 
 public:
 	//Initialization
-	EventListener(sf::RenderWindow* renderWindow)
+	EventListener(sf::RenderWindow* const renderWindow)
 		:_renderWindow(renderWindow),
 		_inputPropNumValue(0),
 		_inputClose(false){}
 
 	~EventListener(void){}
 
-	//Properties
-	int GetInputClose(void) { return _inputClose; }
-	int GetInputLeft(void) { return _inputLeft; }
-	int GetInputRight(void) { return _inputRight; }
-	int GetInputUp(void) { return _inputUp; }
-	int GetInputDown(void) { return _inputDown; }
-	int GetInputPropNum(void) { return _inputPropNum; }
-	int GetInputPropNumValue(void) { return _inputPropNumValue; }
-	int GetInputZoomIn(void) { return _inputZoomIn; }
-	int GetInputZoomOut(void) { return _inputZoomOut; }
+	//Render properties
+	float GetEllapsedTime(void) const { return _renderWindow->GetFrameTime(); }
+
+	//Input Properties
+	int GetInputClose(void) const { return _inputClose; }
+	int GetInputLeft(void) const { return _inputLeft; }
+	int GetInputRight(void) const { return _inputRight; }
+	int GetInputUp(void) const { return _inputUp; }
+	int GetInputDown(void) const { return _inputDown; }
+	int GetInputPropNum(void) const { return _inputPropNum; }
+	int GetInputPropNumValue(void) const { return _inputPropNumValue; }
+	int GetInputZoomIn(void) const { return _inputZoomIn; }
+	int GetInputZoomOut(void) const { return _inputZoomOut; }
 
 	//Methods
 	void CheckEvents(void);
