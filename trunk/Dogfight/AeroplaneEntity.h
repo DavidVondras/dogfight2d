@@ -5,7 +5,6 @@
 #include "ObjectEntity.h"
 #include "EventListener.h"
 #include "EnvironementProvider.h"
-#include "CollisionPoint.h"
 #include "AppSettings.h"
 
 ///
@@ -15,7 +14,10 @@ class AeroplaneEntity :
 	public ObjectEntity
 {
 private:
-	float _vX, _vY, _vXLocal, _vYLocal, _vNormal, _vNormalQuad;
+	float _mass;
+	sf::Vector2f _velocity;
+	sf::Vector2f _velocity_local;
+	float _vNormal, _vNormalQuad;
 	float _cz, _cx;
 	float _Moffset, _MCelev, _MVcoef, _MVlim, _MelevCoef;
 	float _rotationIncidence;
@@ -23,15 +25,32 @@ private:
 	float _rotateValue;
 	float _propelValue, _propelCoef;
 	float _czMin,_czMax, _czMaxVelocity;
-	CollisionPoint* _collisionPointArray[ENTITY_MAX_COLLISIONPOINT_NB];
-	int _collisionPointArrayCount;
 
-	sf::Vector2f _Fpoid;
-	sf::Vector2f _FPousee;
-	sf::Vector2f _FRx;
-	sf::Vector2f _FRz;
+	sf::Vector2f _landingPoint1;
+	sf::Vector2f _landingPoint2;
+	sf::Vector2f _landingPoint1_global;
+	sf::Vector2f _landingPoint2_global;
+	int _landingPoint1_isInCollision;
+	int _landingPoint2_isInCollision;
+
+	sf::Vector2f _F_weight;
+	sf::Vector2f _F_propel;
+	sf::Vector2f _F_Rx;
+	sf::Vector2f _F_Rz;
 
 	sf::Image* _imageAeroplane;
+
+	//pre compute values
+	float _cosRotation;
+	float _sinRotation;
+	float _rotationRad;
+
+	//Methods
+	inline void PreCompute();
+	inline void Compute_F_propel();
+	inline void Compute_F_weight();
+	inline void Compute_F_Rx();
+	inline void Compute_F_Rz(float ellapsedTime);
 
 public:
 	//Initialization
@@ -39,10 +58,10 @@ public:
 	~AeroplaneEntity(void);
 
 	//Methods
-	virtual void Think(EventListener* eventListener, EnvironementProvider* environementprovider);
-	virtual void Draw(sf::RenderWindow* renderWindow);
-	virtual void AddDebugFields(DashBoard* dashBoard);
-	void DrawStrengthData(sf::RenderWindow* renderWindow);
+	virtual void Think(EventListener* const eventListener, EnvironementProvider* const environementprovider);
+	virtual void Draw(sf::RenderWindow* const renderWindow);
+	virtual void AddDebugFields(DashBoard* const dashBoard);
+	void DrawStrengthData(sf::RenderWindow* const renderWindow);
 };
 
 #endif

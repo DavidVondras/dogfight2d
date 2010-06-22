@@ -15,7 +15,7 @@ namespace ValueListenerType
 
 struct ValueListener
 {
-	void* value;
+	void const* value;
 	std::string name;
 	ValueListenerType::Type type;
 };
@@ -25,14 +25,14 @@ class DashBoard
 private:
 	ValueListener _valueListenerArray[32];
 	int _valueListenerArrayCount;
-	int AddGeneric(void* valueToListen, std::string name);
+	int AddGeneric(void const* const valueToListen, std::string name);
 public:
 	DashBoard(void);
 	~DashBoard(void);
 
-	void Add(int* valueToListen, std::string name);
-	void Add(float* valueToListen, std::string name);
-	void Draw(sf::RenderWindow* renderWindow);
+	void Add(int const* const valueToListen, std::string name);
+	void Add(float const* const valueToListen, std::string name);
+	void Draw(sf::RenderWindow* const renderWindow);
 };
 
 #endif

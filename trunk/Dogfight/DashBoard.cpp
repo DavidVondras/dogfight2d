@@ -9,7 +9,7 @@ DashBoard::DashBoard(void)
 DashBoard::~DashBoard(void){}
 
 
-int DashBoard::AddGeneric(void* valueToListen, std::string name)
+int DashBoard::AddGeneric(void const* const valueToListen, std::string name)
 {
 	if(_valueListenerArrayCount < 32)
 	{
@@ -20,7 +20,8 @@ int DashBoard::AddGeneric(void* valueToListen, std::string name)
 	return -1;
 }
 
-void DashBoard::Add(int* valueToListen, std::string name)
+
+void DashBoard::Add(int const* const valueToListen, std::string name)
 {
 	int index = AddGeneric(valueToListen, name);
 	if(index >= 0)
@@ -28,7 +29,7 @@ void DashBoard::Add(int* valueToListen, std::string name)
 }
 
 
-void DashBoard::Add(float* valueToListen, std::string name)
+void DashBoard::Add(float const* const valueToListen, std::string name)
 {
 	int index = AddGeneric(valueToListen, name);
 	if(index >= 0)
@@ -36,7 +37,7 @@ void DashBoard::Add(float* valueToListen, std::string name)
 }
 
 
-void DashBoard::Draw(sf::RenderWindow* renderWindow)
+void DashBoard::Draw(sf::RenderWindow* const renderWindow)
 {
 	sf::String SFstring;
 	SFstring.SetSize(11);

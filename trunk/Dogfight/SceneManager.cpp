@@ -51,17 +51,21 @@ SceneManager::~SceneManager(void)
 ///
 void SceneManager::Step(void)
 {
-	//Invoke begin method
+	// Invoke begin method
 	if(_stepBeginMethod != NULL)
 		_stepBeginMethod();
 
-	//Check events
-	_eventListener->CheckEvents();
+	// Check frame time
+	if(_renderWindow->GetFrameTime() > 0)
+	{
+		// Check events
+		_eventListener->CheckEvents();
 
-	//Think methods
-	Think(_environementProvider->GetAeroplaneArray()[0]);
+		// Think methods
+		Think(_environementProvider->GetAeroplaneArray()[0]);
+	}
 
-	//Set scene view
+	// Set scene view
 	_renderWindow->SetView(*_sceneView);
 	_sceneView->SetCenter(sf::Vector2f(
 		GetEnvironementProvider()->GetAeroplaneArray()[0]->GetPosition().x,
@@ -73,25 +77,25 @@ void SceneManager::Step(void)
 	Draw(_sceneImageSprite);
 	Draw(GetEnvironementProvider()->GetAeroplaneArray()[0]);
 
-	//Set DashBoard view
+	// Set DashBoard view
 	_renderWindow->SetView(_renderWindow->GetDefaultView());
 
-	//Set FrameRate
+	// Set FrameRate
 	_frameRate = 1/_renderWindow->GetFrameTime();
 
-	//Draw dashboard
+	// Draw dashboard
 	_dashboard->Draw(_renderWindow);
 
-	//Display renderWindow
+	// Display renderWindow
 	_renderWindow->Display();
 
-	//Invoke end method
+	// Invoke end method
 	if(_stepEndMethod != NULL)
 		_stepEndMethod();
 }
 
 
-void SceneManager::Think(ObjectEntity* objectEntity)
+void SceneManager::Think(ObjectEntity* const objectEntity)
 {
 	if(_eventListener->GetInputZoomIn() && _zoomFactor < 2)
 		_zoomFactor += 0.1f;
@@ -112,7 +116,7 @@ void SceneManager::Think(ObjectEntity* objectEntity)
 }
 
 
-void SceneManager::Draw(ObjectEntity* objectEntity)
+void SceneManager::Draw(ObjectEntity* const objectEntity)
 {
 	//Draw original
 	objectEntity->Draw(_renderWindow);
@@ -140,7 +144,7 @@ void SceneManager::Draw(ObjectEntity* objectEntity)
 }
 
 
-void SceneManager::Draw(sf::Sprite* sprite)
+void SceneManager::Draw(sf::Sprite* const sprite)
 {
 	//Draw original
 	_renderWindow->Draw(*sprite);

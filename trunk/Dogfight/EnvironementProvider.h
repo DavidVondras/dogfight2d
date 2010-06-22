@@ -22,10 +22,10 @@ public:
 
 	//Properties
 	ObjectEntity** GetAeroplaneArray(void) { return _aeroplaneArray; }
-	void SetSceneImage(sf::Image* value) { _sceneImage = value; }
-	sf::Image* GetSceneImage(void) { return _sceneImage; }
-	int GetSceneWidth(void) { return _sceneImage->GetWidth(); }
-	int GetSceneHeight(void) { return _sceneImage->GetHeight(); }
+	void SetSceneImage(sf::Image* const value) { _sceneImage = value; }
+	sf::Image const* GetSceneImage(void) const { return _sceneImage; }
+	int GetSceneWidth(void) const { return _sceneImage->GetWidth(); }
+	int GetSceneHeight(void) const { return _sceneImage->GetHeight(); }
 };
 
 #endif

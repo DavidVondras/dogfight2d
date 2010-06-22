@@ -57,9 +57,6 @@
     <ClInclude Include="AppSettings.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionPoint.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
     <ClInclude Include="DashBoard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -79,6 +76,9 @@
       <Filter>Image Files</Filter>
     </None>
     <None Include="map.png">
+      <Filter>Image Files</Filter>
+    </None>
+    <None Include="mustang.png">
       <Filter>Image Files</Filter>
     </None>
   </ItemGroup>

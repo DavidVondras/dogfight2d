@@ -5,23 +5,19 @@
 
 AeroplaneEntity::AeroplaneEntity(void):
 	_imageAeroplane(NULL),
-	_vX(0),
-	_vY(0),
+	_mass(700.f),
 	_vRotation(0),
 	_rotateValue(0),
 	_propelValue(0),
-	_propelCoef(0.04f),
-	_collisionPointArrayCount(0),
+	_propelCoef(500.f),
 	_cx(0.0006f),
 	_czMin(0.01f),
-	_czMax(0.9f),
+	_czMax(1.f),
 	_czMaxVelocity(45.f),
 	_MVcoef(0.04f),
 	_MVlim(30.f),
 	_MelevCoef(1.3f)
 {
-	for(int i=0; i < ENTITY_MAX_COLLISIONPOINT_NB; i++)
-		_collisionPointArray[i] = NULL;
 
 	_imageAeroplane = new sf::Image();
 	if(!_imageAeroplane->LoadFromFile("mustang.png"))
@@ -31,24 +27,80 @@ AeroplaneEntity::AeroplaneEntity(void):
 	this->SetImage(*_imageAeroplane);
 
 	//Dummy data
-	SetPosition(100,500);
+	SetPosition(100,480);
 	SetCenter(96,40);
-	_collisionPointArray[0] = new CollisionPoint(0,50);
+	_velocity.x = 0;
+	_velocity.y = 0;
+	_landingPoint1.x = 105.f;
+	_landingPoint1.y = 57.f;
+	_landingPoint2.x = 9.f;
+	_landingPoint2.y = 36.f;
 }
 
 
 AeroplaneEntity::~AeroplaneEntity(void)
 {
 	DeleteReference(_imageAeroplane);
-	for(int i=0; i < ENTITY_MAX_COLLISIONPOINT_NB; i++)
-		DeleteReference(_collisionPointArray[i]);
+}
+
+void AeroplaneEntity::PreCompute()
+{
+	_rotationRad = GetRotation()*PI/180.f;
+	_cosRotation = std::cosf(_rotationRad);
+	_sinRotation = std::sinf(_rotationRad);
+
+	// Local velocity
+	_velocity_local.x = _cosRotation*_velocity.x - _sinRotation*_velocity.y;
+	_velocity_local.y = _sinRotation*_velocity.x + _cosRotation*_velocity.y;
+
+	// Normal velocity
+	_vNormalQuad = _velocity.x*_velocity.x + _velocity.y*_velocity.y;
+	_vNormal = std::sqrtf(_vNormalQuad);
 }
 
 
-#define ComputeCz(czMin, czMaxVelocity, czMax, vx) 6.f*(czMin-czMax)*(vx*vx*vx/3-czMaxVelocity*vx*vx/2.f)/(czMaxVelocity*czMaxVelocity*czMaxVelocity) + czMin
+void AeroplaneEntity::Compute_F_propel()
+{
+	_F_propel.x = _cosRotation*_propelValue*_propelCoef;
+	_F_propel.y = _sinRotation*_propelValue*_propelCoef;
+}
+
+
+void AeroplaneEntity::Compute_F_weight()
+{
+	_F_weight.x = 0;
+	_F_weight.y = -_mass*9.81f;
+}
+
+
+void AeroplaneEntity::Compute_F_Rx()
+{
+	_F_Rx.x = -_cosRotation*_velocity_local.x*_velocity_local.x*_cx;
+	_F_Rx.y = -_sinRotation*_velocity_local.x*_velocity_local.x*_cx;
+}
+
+
+void AeroplaneEntity::Compute_F_Rz(float ellapsedTime)
+{
+	if(_velocity_local.x < 0)
+		// Min value of cz
+		_cz = _czMin;
+	else if(_velocity_local.x > _czMaxVelocity)
+		// Max value of cz
+		_cz = _czMax;
+	else 
+		// Bezier formula for Cz
+		_cz = 6.f*(_czMin-_czMax)*(_velocity_local.x*_velocity_local.x*_velocity_local.x/3-_czMaxVelocity*_velocity_local.x*_velocity_local.x/2.f)/(_czMaxVelocity*_czMaxVelocity*_czMaxVelocity) + _czMin;
+
+	// Strenght
+	_F_Rz.x = -_sinRotation*_velocity_local.y*_cz*_mass/ellapsedTime;
+	_F_Rz.y = _cosRotation*_velocity_local.y*_cz*_mass/ellapsedTime;
+}
+
+
 #define ComputeMOffsetCoef(vCoef, vLim) 3.f*vCoef*(_vNormalQuad*_vNormal/3.f - vLim*vLim*_vNormal)/(2*vLim*vLim*vLim)
-#define ComputeMElevCoef(coef, vLim) 6.f*coef*(vLim*_vXLocal*_vXLocal/2.f - _vXLocal*_vXLocal*_vXLocal/3.f)/(vLim*vLim*vLim)
-void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* environementprovider)
+#define ComputeMElevCoef(coef, vLim) 6.f*coef*(vLim*_velocity_local.x*_velocity_local.x/2.f - _velocity_local.x*_velocity_local.x*_velocity_local.x/3.f)/(vLim*vLim*vLim)
+void AeroplaneEntity::Think(EventListener* const eventListener, EnvironementProvider* const environementprovider)
 {
 	// Check input
 	_rotateValue = 0;
@@ -59,46 +111,21 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	if(eventListener->GetInputPropNum())
 		_propelValue = (float)eventListener->GetInputPropNumValue();
 
-	// Pre compute values
-	float rotationRad = GetRotation()*PI/180.f;
-	float cosRotation = std::cosf(rotationRad);
-	float sinRotation = std::sinf(rotationRad);
+	//Pre compute values
+	PreCompute();
 
-	// Local velocity
-	_vXLocal = cosRotation*_vX - sinRotation*_vY;
-	_vYLocal = sinRotation*_vX + cosRotation*_vY;
-
-	// Normal velocity
-	_vNormalQuad = _vX*_vX + _vY*_vY;
-	_vNormal = std::sqrtf(_vNormalQuad);
-
-	// Cz
-	if(_vXLocal < 0) _cz = _czMin;
-	else if(_vXLocal > 50.f) _cz = _czMax;
-	else _cz = ComputeCz(_czMin, _czMaxVelocity, _czMax, _vXLocal);
-
-	// Weight
-	_Fpoid.x =0.f;
-	_Fpoid.y = -0.5f;
+	// Strenghts
+	Compute_F_weight();
+	Compute_F_propel();
+	Compute_F_Rx();
+	Compute_F_Rz(eventListener->GetEllapsedTime());
 	
-	// Propel
-	_FPousee.x = cosRotation*_propelValue*_propelCoef;
-	_FPousee.y = sinRotation*_propelValue*_propelCoef;
+	// Velocity
+	_velocity.x += (_F_weight.x + _F_propel.x + _F_Rx.x + _F_Rz.x)*eventListener->GetEllapsedTime()/_mass;
+	_velocity.y -= (_F_weight.y + _F_propel.y + _F_Rx.y + _F_Rz.y)*eventListener->GetEllapsedTime()/_mass;
 
-	// FRx
-	_FRx.x = -cosRotation*_vXLocal*_vXLocal*_cx;
-	_FRx.y = -sinRotation*_vXLocal*_vXLocal*_cx;
-	
-	// FRz
-	_FRz.x = -sinRotation*_vYLocal*_cz;
-	_FRz.y = cosRotation*_vYLocal*_cz;
-	
-	// F total
-	_vX += _Fpoid.x + _FPousee.x + _FRx.x + _FRz.x;
-	_vY -= _Fpoid.y + _FPousee.y + _FRx.y + _FRz.y;
-
-	//Moment offset
-	_rotationIncidence = GetRotation() + std::atan2f(_vY, _vX)*180.f/PI;
+	//Momentum offset
+	_rotationIncidence = GetRotation() + std::atan2f(_velocity.y, _velocity.x)*180.f/PI;
 	if(_rotationIncidence > 180.f) _rotationIncidence -= 360.f;
 	else if(_rotationIncidence < -180.f) _rotationIncidence += 360.f;
 
@@ -107,39 +134,55 @@ void AeroplaneEntity::Think(EventListener* eventListener, EnvironementProvider* 
 	else _Moffset = _rotationIncidence*ComputeMOffsetCoef(_MVcoef, _MVlim);
 
 	//Moment Elev
-	if(_vXLocal >= _MVlim) _MCelev = _MelevCoef;
-	else if(_vXLocal <= 0.f) _MCelev = 0;
+	if(_velocity_local.x >= _MVlim) _MCelev = _MelevCoef;
+	else if(_velocity_local.x <= 0.f) _MCelev = 0;
 	else _MCelev = ComputeMElevCoef(_MelevCoef, _MVlim);
 
 	this->Rotate(_Moffset);
 	_vRotation += 1.f*_rotateValue*_MCelev;
 	_vRotation *= 0.6f;
 
-	this->Move(_vX, _vY);
+	this->Move(_velocity.x, _velocity.y);
 	this->Rotate(_vRotation);
 
-	// Dummy collisions
-	if(GetPosition().y > 528)
+	//Compute global landing points
+	_landingPoint1_global = this->TransformToGlobal(_landingPoint1);
+	_landingPoint2_global = this->TransformToGlobal(_landingPoint2);
+
+	_landingPoint1_isInCollision = _landingPoint1_global.y >= 535;
+	_landingPoint2_isInCollision = _landingPoint2_global.y >= 535;
+
+	if(_landingPoint1_isInCollision && _landingPoint2_isInCollision)
 	{
-		_vY = 0;
-		SetPosition(GetPosition().x, 528);
+		float newRotation = std::atan2f(_landingPoint1.y - _landingPoint2.y, _landingPoint1.x - _landingPoint2.x);
+		this->SetRotation( newRotation*180.f/PI);
+		this->SetY( 535 - ( _landingPoint1.y - GetCenter().y )*std::cosf(newRotation) );
+		this->_velocity.y = 0;
+	}
+	else if(_landingPoint1_isInCollision)
+	{
+		
+	}
+	else if(_landingPoint2_isInCollision)
+	{
+
 	}
 }
 
 
-void AeroplaneEntity::Draw(sf::RenderWindow* renderWindow)
+void AeroplaneEntity::Draw(sf::RenderWindow* const renderWindow)
 {
 	renderWindow->Draw(*this);
 	DrawStrengthData(renderWindow);
 }
 
 
-void AeroplaneEntity::AddDebugFields(DashBoard* dashBoard)
+void AeroplaneEntity::AddDebugFields(DashBoard* const dashBoard)
 {
-	dashBoard->Add(&_vX, "A. Global Vx");
-	dashBoard->Add(&_vY, "A. Global Vy");
-	dashBoard->Add(&_vXLocal, "A. Local Vx");
-	dashBoard->Add(&_vYLocal, "A. Local Vy");
+	dashBoard->Add(&_velocity.x, "A. Global Vx");
+	dashBoard->Add(&_velocity.y, "A. Global Vy");
+	dashBoard->Add(&_velocity_local.x, "A. Local Vx");
+	dashBoard->Add(&_velocity_local.y, "A. Local Vy");
 	dashBoard->Add(&_propelValue, "A. Propel");
 	dashBoard->Add(&_cz, "A. Cz");
 	dashBoard->Add(&_rotationIncidence, "A. Rotation vel offset");
@@ -148,17 +191,29 @@ void AeroplaneEntity::AddDebugFields(DashBoard* dashBoard)
 }
 
 
-#define DrawStrenght(strenght) sf::Shape::Line(position, sf::Vector2f( position.x + strenght.x*200.f, position.y - strenght.y*200.f), 2, sf::Color(0,0,255));
-void AeroplaneEntity::DrawStrengthData(sf::RenderWindow* renderWindow)
+#define STRENGHT_VECTOR_COEF 0.01f
+#define DrawStrenght(strenght) sf::Shape::Line(position, sf::Vector2f( position.x + strenght.x*STRENGHT_VECTOR_COEF, position.y - strenght.y*STRENGHT_VECTOR_COEF), 2, sf::Color(0,0,255));
+void AeroplaneEntity::DrawStrengthData(sf::RenderWindow* const renderWindow)
 {
 	sf::Vector2f position = GetPosition();
-	sf::Shape vectorStrenght = DrawStrenght(_Fpoid);
+	sf::Shape vectorStrenght = DrawStrenght(_F_weight);
+
+	//horizon
+	renderWindow->Draw(sf::Shape::Line(sf::Vector2f(-800,535), sf::Vector2f(2000,535), 1, sf::Color(0,0,0)));
+
+	//Strenght vectors
 	renderWindow->Draw(vectorStrenght);
-	vectorStrenght = DrawStrenght(_FPousee);
+	vectorStrenght = DrawStrenght(_F_propel);
 	renderWindow->Draw(vectorStrenght);
-	vectorStrenght = DrawStrenght(_FRx);
+	vectorStrenght = DrawStrenght(_F_Rx);
 	renderWindow->Draw(vectorStrenght);
-	vectorStrenght = DrawStrenght(_FRz);
+	vectorStrenght = DrawStrenght(_F_Rz);
 	renderWindow->Draw(vectorStrenght);
+
+	//Gravity center
 	renderWindow->Draw(sf::Shape::Circle(position, 2, sf::Color(255, 0, 0)));
+
+	//Landing points
+	renderWindow->Draw(sf::Shape::Circle(_landingPoint1_global, 2, sf::Color(255, 255, 0)));
+	renderWindow->Draw(sf::Shape::Circle(_landingPoint2_global, 2, sf::Color(255, 255, 0)));
 }
